@@ -1,0 +1,44 @@
+group 'com.vjss'
+version '1.0.0'
+
+buildscript {
+  ext.kotlin_version = '1.3.50'
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+  }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'application'
+
+mainClassName = 'microchaos.MainKt'
+
+defaultTasks 'run'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+  testCompile "org.assertj:assertj-core:3.12.2"
+  testCompile "org.junit.jupiter:junit-jupiter-api:5.5.2"
+  testCompile "org.junit.jupiter:junit-jupiter-params:5.5.2"
+  testRuntime "org.junit.jupiter:junit-jupiter-engine:5.5.2"
+}
+
+compileKotlin {
+  kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+  kotlinOptions.jvmTarget = "1.8"
+}
+
+jar {
+  manifest { attributes 'Main-Class': 'microchaos.MainKt' }
+  from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
