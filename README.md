@@ -23,5 +23,9 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 Please make sure to update tests as appropriate.
 
+### Missing features
+
+- Model validation: the model resulting from parsing the YAML files are not validated.  
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
