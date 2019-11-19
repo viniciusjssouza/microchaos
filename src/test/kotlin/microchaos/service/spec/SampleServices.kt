@@ -14,7 +14,8 @@ object SampleServices {
                     behavior = Behavior(
                         execution = arrayListOf(
                             Execution(
-                                type = "ioBounded"
+                                type = "ioBounded",
+                                distribution = Distibution(type = "logNormal", mean = 200.0, stdDeviation = 500.0)
                             )
                         ),
                         response = arrayListOf(
@@ -27,7 +28,8 @@ object SampleServices {
                     behavior = Behavior(
                         execution = arrayListOf(
                             Execution(
-                                type = "cpuBounded"
+                                type = "cpuBounded",
+                                distribution = Distibution(type = "logNormal", mean = 200.0, stdDeviation = 500.0)
                             )
                         ),
                         response = arrayListOf(
@@ -41,10 +43,15 @@ object SampleServices {
                     behavior = Behavior(
                         execution = arrayListOf(
                             Execution(
-                                type = "cpuBounded"
+                                type = "cpuBounded",
+                                distribution = Distibution(type = "logNormal", mean = 200.0, stdDeviation = 500.0)
                             ),
                             Execution(
-                                type = "request"
+                                type = "request",
+                                httpRequest = HttpRequest(
+                                    method = "get",
+                                    target = "https://www.google.com/complete/search?q=vai&cp=3&client=psy-ab&pq=vai"
+                                )
                             )
                         ),
                         response = arrayListOf(
