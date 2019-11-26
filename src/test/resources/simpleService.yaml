@@ -5,6 +5,7 @@ service:
 
   endpoints:
     - path: "/some-io"
+      method: "get"
       behavior:
         execution:
           - type: "ioBounded"
@@ -17,6 +18,7 @@ service:
             content: "success"
             probability: 100
     - path: "/unexpected-response"
+      method: "get"
       behavior:
         execution:
           - type: "cpuBounded"
@@ -30,6 +32,7 @@ service:
           - status: 500
             probability: 20
     - path: "/google"
+      method: "post"
       behavior:
         execution:
           - type: "cpuBounded"

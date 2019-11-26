@@ -11,6 +11,7 @@ object SampleServices {
             endpoints = arrayListOf(
                 Endpoint(
                     path = "/some-io",
+                    method = "get",
                     behavior = Behavior(
                         execution = arrayListOf(
                             Execution(
@@ -25,6 +26,7 @@ object SampleServices {
                 ),
                 Endpoint(
                     path = "/unexpected-response",
+                    method = "get",
                     behavior = Behavior(
                         execution = arrayListOf(
                             Execution(
@@ -40,6 +42,7 @@ object SampleServices {
                 ),
                 Endpoint(
                     path = "/google",
+                    method = "post",
                     behavior = Behavior(
                         execution = arrayListOf(
                             Execution(
