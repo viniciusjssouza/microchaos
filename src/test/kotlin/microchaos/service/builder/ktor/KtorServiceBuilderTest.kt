@@ -1,24 +1,21 @@
 package microchaos.service.builder.ktor
 
 import io.ktor.application.Application
+import io.ktor.routing.Routing
 import io.ktor.server.engine.ApplicationEngineFactory
 import io.ktor.server.engine.embeddedServer
-import io.mockk.mockkObject
-import io.mockk.mockkStatic
-import io.mockk.verify
+import io.mockk.*
 import microchaos.service.spec.SampleServices
+import microchaos.service.spec.model.Endpoint
 import org.junit.jupiter.api.Test
-import kotlin.reflect.typeOf
 
 internal class KtorServiceBuilderTest {
 
     private val simpleService = SampleServices.simpleService
-    private val ioEndpoint = simpleService.service.endpoints.first { it.path.equals("/some-io") }
 
     @Test
     fun `initialize service on the configured port`() {
         mockkStatic("io.ktor.server.engine.EmbeddedServerKt")
-
         runInApplication {
             verify {
                 embeddedServer(ofType(ApplicationEngineFactory::class), simpleService.service.port, module = any())
@@ -28,12 +25,16 @@ internal class KtorServiceBuilderTest {
 
     @Test
     fun `build endpoints`() {
-        mockkObject(KtorEndpoint)
+        mockkObject(KtorEndpoint.Companion)
+        val ktorEndpoint = mockkClass(GetEndpoint::class)
+        every { KtorEndpoint.from(ofType(Routing::class), ofType(Endpoint::class)) } returns ktorEndpoint
+        every { ktorEndpoint.build() } returns ktorEndpoint
 
         runInApplication {
             simpleService.service.endpoints.forEach { endpoint ->
-                verify { KtorEndpoint.build(ofType(Application::class), endpoint) }
+                verify { KtorEndpoint.from(ofType(Routing::class), endpoint) }
             }
+            verify(exactly = simpleService.service.endpoints.size) { ktorEndpoint.build() }
         }
     }
 

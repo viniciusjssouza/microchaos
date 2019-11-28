@@ -1,5 +1,6 @@
 package microchaos.service.builder.ktor
 
+import io.ktor.routing.routing
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -8,12 +9,14 @@ import java.util.concurrent.TimeUnit
 
 class KtorServiceBuilder(private val serviceSpec: ServiceSpec) {
 
-    val server: ApplicationEngine;
+    private val server: ApplicationEngine
 
     init {
         this.server = embeddedServer(Netty, port = serviceSpec.service.port) {
-            serviceSpec.service.endpoints.forEach { endpoint ->
-                KtorEndpoint.build(this, endpoint)
+            this.routing {
+                serviceSpec.service.endpoints.forEach { endpoint ->
+                    KtorEndpoint.from(this, endpoint).build()
+                }
             }
         }
     }
