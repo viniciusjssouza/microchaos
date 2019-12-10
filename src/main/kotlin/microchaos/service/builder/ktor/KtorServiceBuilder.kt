@@ -29,4 +29,7 @@ class KtorServiceBuilder(private val serviceSpec: ServiceSpec) {
         return this.server.stop(100, 500, TimeUnit.MILLISECONDS)
     }
 
+    fun getPort(): Int {
+        return this.server.environment.connectors.first().port
+    }
 }

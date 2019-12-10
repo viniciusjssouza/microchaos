@@ -4,6 +4,7 @@ import io.ktor.application.Application
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.routing
+import microchaos.service.builder.execution.ExecutionRunner
 import microchaos.service.spec.model.Endpoint
 
 abstract class KtorEndpoint(val routing: Routing, val endpoint: Endpoint) {
@@ -28,7 +29,9 @@ class GetEndpoint(routing: Routing, endpoint: Endpoint) : KtorEndpoint(routing, 
 
     override fun build(): KtorEndpoint {
         routing.get(this@GetEndpoint.endpoint.path) {
-
+            this@GetEndpoint.endpoint.behavior.execution.forEach {
+                ExecutionRunner.fromSpec(it).run()
+            }
         }
         return this
     }

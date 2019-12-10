@@ -16,7 +16,7 @@ object SampleServices {
                         execution = arrayListOf(
                             Execution(
                                 type = "ioBounded",
-                                distribution = Distibution(type = "logNormal", mean = 200.0, stdDeviation = 500.0)
+                                distribution = Distribution(type = "logNormal", mean = 6.0, stdDeviation = 0.25)
                             )
                         ),
                         response = arrayListOf(
@@ -31,7 +31,7 @@ object SampleServices {
                         execution = arrayListOf(
                             Execution(
                                 type = "cpuBounded",
-                                distribution = Distibution(type = "logNormal", mean = 200.0, stdDeviation = 500.0)
+                                distribution = Distribution(type = "logNormal", mean = 6.0, stdDeviation = 0.25)
                             )
                         ),
                         response = arrayListOf(
@@ -47,7 +47,7 @@ object SampleServices {
                         execution = arrayListOf(
                             Execution(
                                 type = "cpuBounded",
-                                distribution = Distibution(type = "logNormal", mean = 200.0, stdDeviation = 500.0)
+                                distribution = Distribution(type = "logNormal", mean = 6.0, stdDeviation = 0.25)
                             ),
                             Execution(
                                 type = "request",

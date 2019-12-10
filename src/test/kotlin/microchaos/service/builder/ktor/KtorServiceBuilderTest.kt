@@ -7,19 +7,27 @@ import io.ktor.server.engine.embeddedServer
 import io.mockk.*
 import microchaos.service.spec.SampleServices
 import microchaos.service.spec.model.Endpoint
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
+import kotlin.test.expect
 
 internal class KtorServiceBuilderTest {
 
     private val simpleService = SampleServices.simpleService
 
+    @AfterEach
+    fun unmock() {
+        unmockkAll()
+    }
+
     @Test
     fun `initialize service on the configured port`() {
-        mockkStatic("io.ktor.server.engine.EmbeddedServerKt")
+        val ktorEndpoint = mockkClass(GetEndpoint::class)
+        every { KtorEndpoint.from(ofType(Routing::class), ofType(Endpoint::class)) } returns ktorEndpoint
+        every { ktorEndpoint.build() } returns ktorEndpoint
         runInApplication {
-            verify {
-                embeddedServer(ofType(ApplicationEngineFactory::class), simpleService.service.port, module = any())
-            }
+            assertThat(it.getPort()).isEqualTo(simpleService.service.port)
         }
     }
 

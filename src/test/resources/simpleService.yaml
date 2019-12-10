@@ -11,8 +11,8 @@ service:
           - type: "ioBounded"
             distribution:
               type: "logNormal"
-              mean: 200
-              stdDeviation: 500
+              mean: 6
+              stdDeviation: 0.25
         response:
           - status: 200
             content: "success"
@@ -24,8 +24,8 @@ service:
           - type: "cpuBounded"
             distribution:
               type: "logNormal"
-              mean: 200
-              stdDeviation: 500
+              mean: 6
+              stdDeviation: 0.25
         response:
           - status: 200
             probability: 80
@@ -38,8 +38,8 @@ service:
           - type: "cpuBounded"
             distribution:
               type: "logNormal"
-              mean: 200
-              stdDeviation: 500
+              mean: 6
+              stdDeviation: 0.25
           - type: "request"
             httpRequest:
               method: "get"
