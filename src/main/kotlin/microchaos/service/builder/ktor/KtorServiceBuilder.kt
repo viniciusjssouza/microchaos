@@ -1,35 +1,44 @@
 package microchaos.service.builder.ktor
 
+import io.ktor.routing.Routing
 import io.ktor.routing.routing
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import microchaos.service.spec.model.ServiceSpec
+import microchaos.service.builder.EndpointBuilder
+import microchaos.service.builder.ServiceBuilder
+import microchaos.service.builder.execution.RunnerFactory
+import microchaos.service.spec.model.Endpoint
+import microchaos.service.spec.model.Service
 import java.util.concurrent.TimeUnit
 
-class KtorServiceBuilder(private val serviceSpec: ServiceSpec) {
+class KtorServiceBuilder(
+    service: Service,
+    endpointFactory: (routing: Routing, endpointSpec: Endpoint)-> EndpointBuilder
+): ServiceBuilder(service) {
 
     private val server: ApplicationEngine
 
     init {
-        this.server = embeddedServer(Netty, port = serviceSpec.service.port) {
+        this.server = embeddedServer(Netty, port = service.port) {
             this.routing {
-                serviceSpec.service.endpoints.forEach { endpoint ->
-                    KtorEndpoint.from(this, endpoint).build()
+                service.endpoints.forEach { endpoint ->
+                    val endpointBuilder = endpointFactory(this, endpoint)
+                    endpointBuilder.build(RunnerFactory())
                 }
             }
         }
     }
 
-    fun start(wait: Boolean = true): ApplicationEngine {
+    override fun start(wait: Boolean): ApplicationEngine {
         return this.server.start(wait)
     }
 
-    fun stop() {
+    override fun stop() {
         return this.server.stop(100, 500, TimeUnit.MILLISECONDS)
     }
 
-    fun getPort(): Int {
+    override fun getPort(): Int {
         return this.server.environment.connectors.first().port
     }
 }

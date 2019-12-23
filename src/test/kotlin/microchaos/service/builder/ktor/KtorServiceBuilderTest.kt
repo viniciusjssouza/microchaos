@@ -1,31 +1,43 @@
 package microchaos.service.builder.ktor
 
-import io.ktor.application.Application
 import io.ktor.routing.Routing
-import io.ktor.server.engine.ApplicationEngineFactory
-import io.ktor.server.engine.embeddedServer
 import io.mockk.*
+import microchaos.service.builder.EndpointBuilder
+import microchaos.service.builder.execution.ExecutionRunner
+import microchaos.service.builder.execution.RunnerFactory
 import microchaos.service.spec.SampleServices
 import microchaos.service.spec.model.Endpoint
+import microchaos.service.spec.model.Execution
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
-import kotlin.test.expect
 
 internal class KtorServiceBuilderTest {
 
-    private val simpleService = SampleServices.simpleService
+    class EndpointBuilderMock : EndpointBuilder() {
+        var calls = 0
 
-    @AfterEach
-    fun unmock() {
-        unmockkAll()
+        override fun build(runnerFactory: (execution: Execution) -> ExecutionRunner): EndpointBuilder {
+            calls++
+            return this
+        }
     }
+
+    class EndpointMockFactory : (Routing, Endpoint) -> EndpointBuilder {
+        val endpoints = ArrayList<Endpoint>()
+        val endpointBuilder = EndpointBuilderMock()
+
+
+        override fun invoke(routing: Routing, endpoint: Endpoint): EndpointBuilder {
+            this.endpoints.add(endpoint)
+            return endpointBuilder
+        }
+    }
+
+    private val simpleService = SampleServices.simpleService
+    private val mockFactory = EndpointMockFactory()
 
     @Test
     fun `initialize service on the configured port`() {
-        val ktorEndpoint = mockkClass(GetEndpoint::class)
-        every { KtorEndpoint.from(ofType(Routing::class), ofType(Endpoint::class)) } returns ktorEndpoint
-        every { ktorEndpoint.build() } returns ktorEndpoint
         runInApplication {
             assertThat(it.getPort()).isEqualTo(simpleService.service.port)
         }
@@ -33,21 +45,14 @@ internal class KtorServiceBuilderTest {
 
     @Test
     fun `build endpoints`() {
-        mockkObject(KtorEndpoint.Companion)
-        val ktorEndpoint = mockkClass(GetEndpoint::class)
-        every { KtorEndpoint.from(ofType(Routing::class), ofType(Endpoint::class)) } returns ktorEndpoint
-        every { ktorEndpoint.build() } returns ktorEndpoint
-
         runInApplication {
-            simpleService.service.endpoints.forEach { endpoint ->
-                verify { KtorEndpoint.from(ofType(Routing::class), endpoint) }
-            }
-            verify(exactly = simpleService.service.endpoints.size) { ktorEndpoint.build() }
+            assertThat(mockFactory.endpointBuilder.calls).isEqualTo(simpleService.service.endpoints.size)
+            assertThat(mockFactory.endpoints).isEqualTo(simpleService.service.endpoints)
         }
     }
 
     private fun runInApplication(testFunc: (builder: KtorServiceBuilder) -> Unit) {
-        val builder = KtorServiceBuilder(simpleService)
+        val builder = KtorServiceBuilder(simpleService.service, mockFactory)
         try {
             builder.start(wait = false)
             testFunc(builder)
