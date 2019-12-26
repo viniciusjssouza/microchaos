@@ -5,38 +5,41 @@ service:
 
   endpoints:
     - path: "/some-io"
+      method: "get"
       behavior:
         execution:
           - type: "ioBounded"
             distribution:
               type: "logNormal"
-              mean: 200
-              stdDeviation: 500
+              mean: 6
+              stdDeviation: 0.25
         response:
           - status: 200
             content: "success"
             probability: 100
     - path: "/unexpected-response"
+      method: "get"
       behavior:
         execution:
           - type: "cpuBounded"
             distribution:
               type: "logNormal"
-              mean: 200
-              stdDeviation: 500
+              mean: 6
+              stdDeviation: 0.25
         response:
           - status: 200
             probability: 80
           - status: 500
             probability: 20
     - path: "/google"
+      method: "post"
       behavior:
         execution:
           - type: "cpuBounded"
             distribution:
               type: "logNormal"
-              mean: 200
-              stdDeviation: 500
+              mean: 6
+              stdDeviation: 0.25
           - type: "request"
             httpRequest:
               method: "get"

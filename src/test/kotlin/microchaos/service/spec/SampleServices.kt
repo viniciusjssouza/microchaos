@@ -11,11 +11,12 @@ object SampleServices {
             endpoints = arrayListOf(
                 Endpoint(
                     path = "/some-io",
+                    method = "get",
                     behavior = Behavior(
                         execution = arrayListOf(
                             Execution(
                                 type = "ioBounded",
-                                distribution = Distibution(type = "logNormal", mean = 200.0, stdDeviation = 500.0)
+                                distribution = Distribution(type = "logNormal", mean = 6.0, stdDeviation = 0.25)
                             )
                         ),
                         response = arrayListOf(
@@ -25,11 +26,12 @@ object SampleServices {
                 ),
                 Endpoint(
                     path = "/unexpected-response",
+                    method = "get",
                     behavior = Behavior(
                         execution = arrayListOf(
                             Execution(
                                 type = "cpuBounded",
-                                distribution = Distibution(type = "logNormal", mean = 200.0, stdDeviation = 500.0)
+                                distribution = Distribution(type = "logNormal", mean = 6.0, stdDeviation = 0.25)
                             )
                         ),
                         response = arrayListOf(
@@ -40,11 +42,12 @@ object SampleServices {
                 ),
                 Endpoint(
                     path = "/google",
+                    method = "post",
                     behavior = Behavior(
                         execution = arrayListOf(
                             Execution(
                                 type = "cpuBounded",
-                                distribution = Distibution(type = "logNormal", mean = 200.0, stdDeviation = 500.0)
+                                distribution = Distribution(type = "logNormal", mean = 6.0, stdDeviation = 0.25)
                             ),
                             Execution(
                                 type = "request",
