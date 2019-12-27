@@ -1,0 +1,17 @@
+service:
+  name: "periodicTasks"
+  type: "web"
+  port: "8080"
+
+  periodicTasks:
+    - period: 5000
+      behavior:
+        execution:
+          - type: "networkFailure"
+            duration:
+              type: "constant"
+              mean: 10000
+    - period: 50000
+      behavior:
+        execution:
+        - type: "terminateProcess"

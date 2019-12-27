@@ -9,7 +9,7 @@ service:
       behavior:
         execution:
           - type: "ioBounded"
-            distribution:
+            duration:
               type: "logNormal"
               mean: 6
               stdDeviation: 0.25
@@ -22,7 +22,7 @@ service:
       behavior:
         execution:
           - type: "cpuBounded"
-            distribution:
+            duration:
               type: "logNormal"
               mean: 6
               stdDeviation: 0.25
@@ -36,7 +36,7 @@ service:
       behavior:
         execution:
           - type: "cpuBounded"
-            distribution:
+            duration:
               type: "logNormal"
               mean: 6
               stdDeviation: 0.25

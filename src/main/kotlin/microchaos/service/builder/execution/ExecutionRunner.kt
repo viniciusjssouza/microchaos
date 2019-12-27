@@ -10,7 +10,6 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.nio.charset.Charset
 import java.util.*
-import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.ForkJoinPool
 import java.util.stream.Collectors
@@ -24,7 +23,7 @@ abstract class ExecutionRunner(val spec: Execution) {
     abstract fun run(): Any
 
     protected fun generateDistributionSample(): Double {
-        return spec.distribution?.sample() ?:
+        return spec.duration?.sample() ?:
             throw IllegalArgumentException("Every ${this::class.simpleName} must contain a distribution")
     }
 }

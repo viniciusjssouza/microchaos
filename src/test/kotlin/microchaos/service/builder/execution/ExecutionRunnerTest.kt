@@ -13,7 +13,7 @@ internal class ExecutionRunnerTest {
     @Test
     fun `run an "io bounded" execution`() {
         val distribution = Distribution("normal", 200.0, 0.0001)
-        val spec = Execution("ioBounded", distribution = distribution)
+        val spec = Execution("ioBounded", duration = distribution)
         val runner = IoBoundedRunner(spec)
         val execTime = measureExecutionTime {
             runner.run()
@@ -24,7 +24,7 @@ internal class ExecutionRunnerTest {
     @Test
     fun `run an "cpu bounded" execution`() {
         val distribution = Distribution("normal", 20000.0, 0.0001)
-        val spec = Execution("cpuBounded", distribution = distribution)
+        val spec = Execution("cpuBounded", duration = distribution)
         val runner = CpuBoundedRunner(spec)
         val execTime = measureExecutionTime {
             runner.run()

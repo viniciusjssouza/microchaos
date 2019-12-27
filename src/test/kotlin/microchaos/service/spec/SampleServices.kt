@@ -16,7 +16,7 @@ object SampleServices {
                         execution = arrayListOf(
                             Execution(
                                 type = "ioBounded",
-                                distribution = Distribution(type = "logNormal", mean = 6.0, stdDeviation = 0.25)
+                                duration = Distribution(type = "logNormal", mean = 6.0, stdDeviation = 0.25)
                             )
                         ),
                         response = arrayListOf(
@@ -31,7 +31,7 @@ object SampleServices {
                         execution = arrayListOf(
                             Execution(
                                 type = "cpuBounded",
-                                distribution = Distribution(type = "logNormal", mean = 6.0, stdDeviation = 0.25)
+                                duration = Distribution(type = "logNormal", mean = 6.0, stdDeviation = 0.25)
                             )
                         ),
                         response = arrayListOf(
@@ -47,7 +47,7 @@ object SampleServices {
                         execution = arrayListOf(
                             Execution(
                                 type = "cpuBounded",
-                                distribution = Distribution(type = "logNormal", mean = 6.0, stdDeviation = 0.25)
+                                duration = Distribution(type = "logNormal", mean = 6.0, stdDeviation = 0.25)
                             ),
                             Execution(
                                 type = "request",
@@ -61,6 +61,36 @@ object SampleServices {
                             Response(status = 200, probability = 80.0),
                             Response(status = 500, probability = 20.0)
                         )
+                    )
+                )
+            )
+        )
+    )
+
+    val periodicTasks = ServiceSpec(
+        Service(
+            name = "periodicTasks",
+            type = "web",
+            port = 8080,
+            periodicTasks = listOf(
+                PeriodicTask(
+                    period = 5000,
+                    behavior = Behavior(
+                        listOf(Execution(
+                            type = "networkFailure",
+                            duration = Distribution(
+                                type = "constant",
+                                mean = 10_000.0
+                            )
+                        ))
+                    )
+                ),
+                PeriodicTask(
+                    period = 50_000,
+                    behavior = Behavior(
+                        listOf(Execution(
+                            type = "terminateProcess"
+                        ))
                     )
                 )
             )

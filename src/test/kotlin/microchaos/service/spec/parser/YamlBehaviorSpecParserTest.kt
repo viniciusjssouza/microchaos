@@ -15,6 +15,13 @@ internal class YamlBehaviorSpecParserTest {
         assertThat(service).isEqualTo(SampleServices.simpleService)
     }
 
+    @Test
+    fun parsePeriodicTasksTest() {
+        val input = readYamlFile("/periodicTasks.yaml");
+        val service = parser.parse(input)
+        assertThat(service).isEqualTo(SampleServices.periodicTasks)
+    }
+
     private fun readYamlFile(fileName: String): String {
         return this::class.java.getResource(fileName).readText();
     }
