@@ -41,9 +41,9 @@ dependencies {
   compile "io.ktor:ktor-html-builder:$ktor_version"
   testCompile "io.ktor:ktor-server-test-host:$ktor_version"
 
-  implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8'
-  implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8'
-  implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8'
+  implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.10.1'
+  implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.10.1'
+  implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.1'
   implementation 'org.apache.commons:commons-math3:3.6.1'
   implementation 'ch.qos.logback:logback-classic:1.2.3'
 

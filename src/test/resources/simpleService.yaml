@@ -7,7 +7,7 @@ service:
     - path: "/some-io"
       method: "get"
       behavior:
-        execution:
+        commands:
           - type: "ioBounded"
             duration:
               type: "logNormal"
@@ -20,7 +20,7 @@ service:
     - path: "/unexpected-response"
       method: "get"
       behavior:
-        execution:
+        commands:
           - type: "cpuBounded"
             duration:
               type: "logNormal"
@@ -34,7 +34,7 @@ service:
     - path: "/google"
       method: "post"
       behavior:
-        execution:
+        commands:
           - type: "cpuBounded"
             duration:
               type: "logNormal"

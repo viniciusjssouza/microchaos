@@ -6,12 +6,12 @@ service:
   periodicTasks:
     - period: 5000
       behavior:
-        execution:
+        commands:
           - type: "networkFailure"
             duration:
               type: "constant"
               mean: 10000
     - period: 50000
       behavior:
-        execution:
+        commands:
         - type: "terminateProcess"
