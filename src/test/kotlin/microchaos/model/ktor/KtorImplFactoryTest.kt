@@ -47,4 +47,18 @@ internal class KtorImplFactoryTest {
         val ktorCommand = implFactory.getCommandImpl(command)
         assertThat(ktorCommand).isInstanceOf(RequestCommand::class.java)
     }
+
+    @Test
+    fun `build a network failure command`() {
+        val command = Command("networkFailure")
+        val ktorCommand = implFactory.getCommandImpl(command)
+        assertThat(ktorCommand).isInstanceOf(LinuxNetworkFailureCommand::class.java)
+    }
+
+    @Test
+    fun `build an application shutdown command`() {
+        val command = Command("applicationShutdown")
+        val ktorCommand = implFactory.getCommandImpl(command)
+        assertThat(ktorCommand).isInstanceOf(ApplicationShutdownCommand::class.java)
+    }
 }

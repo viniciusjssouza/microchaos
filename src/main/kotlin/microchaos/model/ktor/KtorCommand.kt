@@ -14,7 +14,9 @@ abstract class KtorCommand(
         private val commandFactory = mapOf(
             "ioBounded" to { command: Command -> IoBoundedCommand(command) },
             "cpuBounded" to { command: Command -> CpuBoundedCommand(command) },
-            "request" to { command: Command -> RequestCommand(command) }
+            "request" to { command: Command -> RequestCommand(command) },
+            "networkFailure" to { command: Command -> LinuxNetworkFailureCommand(command) },
+            "applicationShutdown" to { command: Command -> ApplicationShutdownCommand(command) }
         )
 
         fun from(command: Command): KtorCommand {
