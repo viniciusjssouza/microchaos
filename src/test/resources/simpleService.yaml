@@ -7,9 +7,9 @@ service:
     - path: "/some-io"
       method: "get"
       behavior:
-        execution:
+        commands:
           - type: "ioBounded"
-            distribution:
+            duration:
               type: "logNormal"
               mean: 6
               stdDeviation: 0.25
@@ -20,9 +20,9 @@ service:
     - path: "/unexpected-response"
       method: "get"
       behavior:
-        execution:
+        commands:
           - type: "cpuBounded"
-            distribution:
+            duration:
               type: "logNormal"
               mean: 6
               stdDeviation: 0.25
@@ -34,9 +34,9 @@ service:
     - path: "/google"
       method: "post"
       behavior:
-        execution:
+        commands:
           - type: "cpuBounded"
-            distribution:
+            duration:
               type: "logNormal"
               mean: 6
               stdDeviation: 0.25
