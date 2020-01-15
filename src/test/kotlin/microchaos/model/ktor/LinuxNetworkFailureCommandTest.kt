@@ -7,7 +7,6 @@ import microchaos.model.Command
 import microchaos.model.Distribution
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import java.io.IOException
 
 internal class LinuxNetworkFailureCommandTest {
 
