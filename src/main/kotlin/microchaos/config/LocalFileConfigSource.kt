@@ -8,7 +8,7 @@ import java.io.InputStream
 class LocalFileConfigSource : ConfigSource {
 
     companion object {
-        const val FILE_PATH_ENV_VAR = "MICROCHAOS_CONFIG_PATH"
+        const val FILE_PATH_ENV_VAR = "CONFIG_PATH"
         private val logger = loggerFor<LocalFileConfigSource>()
     }
 

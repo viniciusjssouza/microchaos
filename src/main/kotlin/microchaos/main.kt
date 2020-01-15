@@ -1,23 +1,18 @@
 package microchaos
 
-import io.ktor.application.*
-import io.ktor.http.ContentType
-import io.ktor.response.respondText
-import io.ktor.routing.get
-import io.ktor.routing.routing
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import microchaos.config.Configuration
+import microchaos.config.LocalFileConfigSource
+import microchaos.model.ktor.KtorImplFactory
+import microchaos.parser.YamlBehaviorSpecParser
 
 fun main(args: Array<String>) {
-    val server = embeddedServer(Netty, port = 8080) {
-        routing {
-            get("/") {
-                call.respondText("Hello World!", ContentType.Text.Plain)
-            }
-            get("/demo") {
-                call.respondText("HELLO WORLD!")
-            }
-        }
-    }
-    server.start(wait = true)
+    val implFactory = KtorImplFactory()
+    val config = Configuration(
+        arrayOf(
+            LocalFileConfigSource()
+        ),
+        YamlBehaviorSpecParser(implFactory)
+    )
+    val model = config.load()
+    model.service.start(wait = true)
 }

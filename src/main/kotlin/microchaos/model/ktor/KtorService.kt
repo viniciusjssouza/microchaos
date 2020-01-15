@@ -4,6 +4,7 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import microchaos.infra.logging.loggerFor
 import microchaos.model.Endpoint
 import microchaos.model.PeriodicTask
 import microchaos.model.Service
@@ -16,6 +17,10 @@ class KtorService(
     endpoints: List<Endpoint> = arrayListOf(),
     periodicTasks: List<PeriodicTask> = arrayListOf()
 ) : Service(name, type, port, endpoints, periodicTasks) {
+
+    companion object {
+        private val logger = loggerFor<KtorService>()
+    }
 
     constructor(service: Service):
             this(service.name, service.type, service.port, service.endpoints, service.periodicTasks)
@@ -33,7 +38,8 @@ class KtorService(
         }
     }
 
-    fun start(wait: Boolean): ApplicationEngine {
+    override fun start(wait: Boolean): ApplicationEngine {
+        logger.info("Starting Ktor service on port ${this.port}")
         return this.server.start(wait)
     }
 

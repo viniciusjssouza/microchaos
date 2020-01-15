@@ -3,6 +3,7 @@ package microchaos.model.ktor
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.post
+import microchaos.infra.logging.loggerFor
 import microchaos.model.Behavior
 import microchaos.model.Endpoint
 
@@ -13,6 +14,9 @@ abstract class KtorEndpoint(
 ) : Endpoint(path, method, behavior) {
 
     companion object {
+
+        val logger = loggerFor<KtorEndpoint>()
+
         private val endpointsFactories = mapOf(
             "get" to { endpoint: Endpoint -> GetEndpoint(endpoint) },
             "post" to { endpoint: Endpoint -> PostEndpoint(endpoint) }
@@ -43,6 +47,7 @@ abstract class KtorEndpoint(
 class PostEndpoint(endpoint: Endpoint) : KtorEndpoint(endpoint) {
 
     override fun onRequest(routing: Routing, action: () -> Unit) {
+        logger.info("Mapping POST endpoint for path '$path'")
         routing.post(this@PostEndpoint.path) {
             action()
         }
@@ -52,6 +57,7 @@ class PostEndpoint(endpoint: Endpoint) : KtorEndpoint(endpoint) {
 class GetEndpoint(endpoint: Endpoint) : KtorEndpoint(endpoint) {
 
     override fun onRequest(routing: Routing, action: () -> Unit) {
+        logger.info("Mapping GET endpoint for path '$path'")
         routing.get(this@GetEndpoint.path) {
             action()
         }

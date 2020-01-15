@@ -8,6 +8,8 @@ open class Service (
     val periodicTasks: List<PeriodicTask> = arrayListOf()
 ) {
 
+    open fun start(wait: Boolean): Any = NotImplementedError("Only service implementations can be started")
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
