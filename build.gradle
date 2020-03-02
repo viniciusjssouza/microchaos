@@ -58,6 +58,10 @@ dependencies {
   test.useJUnitPlatform()
 }
 
+test {
+  testLogging.showStandardStreams = true
+}
+
 shadowJar {
   mainClassName = 'microchaos.MainKt'
 }
