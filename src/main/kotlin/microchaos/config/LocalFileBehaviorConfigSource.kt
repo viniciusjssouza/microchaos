@@ -1,25 +1,24 @@
 package microchaos.config
 
+import microchaos.infra.Configuration
 import microchaos.infra.logging.loggerFor
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
 
-class LocalFileConfigSource : ConfigSource {
+class LocalFileBehaviorConfigSource : BehaviorConfigSource {
 
     companion object {
-        const val FILE_PATH_ENV_VAR = "CONFIG_PATH"
-        private val logger = loggerFor<LocalFileConfigSource>()
+        private val logger = loggerFor<LocalFileBehaviorConfigSource>()
     }
 
     override fun canBeUsed(): Boolean {
-        return System.getenv().containsKey(FILE_PATH_ENV_VAR)
+        return Configuration.localFileConfigPath?.isNotBlank() ?: false
     }
 
     override fun loadConfiguration(): InputStream {
-        val filePath = System.getenv().getOrElse(FILE_PATH_ENV_VAR, {
-            throw IllegalArgumentException("Environment variable $FILE_PATH_ENV_VAR not provided")
-        })
+        val filePath = Configuration.localFileConfigPath
+            ?: throw IllegalArgumentException("Local file path configuration not found")
         try {
             logger.info("Loading configuration from local file: $filePath")
             return FileInputStream(filePath)

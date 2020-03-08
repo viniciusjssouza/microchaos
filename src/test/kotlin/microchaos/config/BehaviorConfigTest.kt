@@ -11,14 +11,14 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import java.io.FileInputStream
 
-internal class ConfigurationTest {
+internal class BehaviorConfigTest {
 
-    class NotApplicableConfigSource : ConfigSource {
+    class NotApplicableBehaviorConfigSource : BehaviorConfigSource {
         override fun canBeUsed() = false
         override fun loadConfiguration() = throw UnsupportedOperationException()
     }
 
-    class LocalFileConfigSource : ConfigSource {
+    class LocalFileBehaviorConfigSource : BehaviorConfigSource {
         override fun canBeUsed() = true
         override fun loadConfiguration() = FileInputStream(ModelFiles.simpleService())
     }
@@ -27,9 +27,9 @@ internal class ConfigurationTest {
 
     @Test
     fun `when no config source can be used`() {
-        val config = Configuration(
+        val config = BehaviorConfig(
             arrayOf(
-                NotApplicableConfigSource()
+                NotApplicableBehaviorConfigSource()
             ),
             parser
         )
@@ -38,10 +38,10 @@ internal class ConfigurationTest {
 
     @Test
     fun `when a config source is used`() {
-        val config = Configuration(
+        val config = BehaviorConfig(
             arrayOf(
-                NotApplicableConfigSource(),
-                LocalFileConfigSource()
+                NotApplicableBehaviorConfigSource(),
+                LocalFileBehaviorConfigSource()
             ),
             parser
         )
