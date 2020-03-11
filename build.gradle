@@ -52,6 +52,8 @@ dependencies {
   testCompile "org.junit.jupiter:junit-jupiter-api:5.5.2"
   testCompile "org.junit.jupiter:junit-jupiter-params:5.5.2"
   testCompile ('org.mockito:mockito-junit-jupiter:3.0.0')
+  testCompile "org.testcontainers:testcontainers:1.13.0"
+  testCompile "org.testcontainers:junit-jupiter:1.13.0"
   testCompile ('com.github.stefanbirkner:system-rules:1.17.2')
   testImplementation "io.mockk:mockk:1.8.13.kotlin13"
   testRuntime "org.junit.jupiter:junit-jupiter-engine:5.5.2"
