@@ -1,25 +1,21 @@
 package microchaos.support
 
-import org.junit.ClassRule
+import microchaos.infra.logging.loggerFor
 import org.testcontainers.containers.GenericContainer
-import org.testcontainers.junit.jupiter.Testcontainers
+import org.testcontainers.containers.output.Slf4jLogConsumer
 
-@Testcontainers
-open class ConsulContainer(dockerImageName: String) : GenericContainer<ConsulContainer>(dockerImageName){
+open class ConsulContainer(dockerImageName: String) : GenericContainer<ConsulContainer>(dockerImageName) {
+
+    companion object {
+        private val log = loggerFor<ConsulContainer>()
+    }
 
     fun withDefaultConfig(): ConsulContainer {
         return this
-            .withExposedPorts(80)
-            .withEnv("MAGIC_NUMBER", "42")
-            .withCommand(
-                "/bin/sh", "-c",
-                "test"
-            )
+            .withNetworkMode("host")
+            .withCommand("consul agent -server -bind=0.0.0.0 -advertise=127.0.0.1 -bootstrap-expect=1 -data-dir=/consul/data")
+            .withLogConsumer(Slf4jLogConsumer(log))
     }
-    companion object {
-        @ClassRule
-        @JvmField
-        protected val consul = ConsulContainer("consul:latest")
-    }
+
 
 }

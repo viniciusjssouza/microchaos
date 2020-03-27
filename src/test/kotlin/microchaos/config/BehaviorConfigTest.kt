@@ -16,11 +16,13 @@ internal class BehaviorConfigTest {
     class NotApplicableBehaviorConfigSource : BehaviorConfigSource {
         override fun canBeUsed() = false
         override fun loadConfiguration() = throw UnsupportedOperationException()
+        override fun onConfigChanged(listener: ConfigChangeListener) = throw UnsupportedOperationException()
     }
 
     class LocalFileBehaviorConfigSource : BehaviorConfigSource {
         override fun canBeUsed() = true
         override fun loadConfiguration() = FileInputStream(ModelFiles.simpleService())
+        override fun onConfigChanged(listener: ConfigChangeListener) = throw UnsupportedOperationException()
     }
 
     private val parser = mockk<ServiceSpecParser>()

@@ -3,9 +3,13 @@ package microchaos.config
 import io.mockk.every
 import io.mockk.mockkObject
 import microchaos.infra.Configuration
+import microchaos.support.ConsulContainer
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.ClassRule
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
 
 internal class ConsulBehaviorConfigSourceTest {
 
@@ -13,7 +17,7 @@ internal class ConsulBehaviorConfigSourceTest {
 
     @BeforeEach
     fun setupConfiguration() {
-        mockkObject(Configuration);
+        mockkObject(Configuration)
     }
 
     @Test

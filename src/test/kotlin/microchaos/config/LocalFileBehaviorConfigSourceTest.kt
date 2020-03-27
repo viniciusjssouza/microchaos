@@ -7,6 +7,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.io.File
 
 internal class LocalFileBehaviorConfigSourceTest {
 
@@ -15,7 +16,7 @@ internal class LocalFileBehaviorConfigSourceTest {
 
     @BeforeEach
     fun setupConfiguration() {
-        mockkObject(Configuration);
+        mockkObject(Configuration)
     }
 
     @Test
@@ -43,6 +44,24 @@ internal class LocalFileBehaviorConfigSourceTest {
     fun `load config with success`() {
         every { Configuration.localFileConfigPath } returns yamlConfigFilePath
         assertThat(configSource.loadConfiguration()).isNotNull()
+    }
+
+    @Test
+    fun `reload config after change`() {
+        val tmpFile = File.createTempFile("microchaos", "test")
+        try {
+            every { Configuration.localFileConfigPath } returns tmpFile.absolutePath
+            var reloaded = false
+
+            configSource.onConfigChanged { reloaded = true }
+            Thread.sleep(20)
+            tmpFile.writeText("Change!")
+            Thread.sleep(20)
+
+            assertThat(reloaded).isTrue()
+        } finally {
+            tmpFile.delete()
+        }
     }
 
 }

@@ -1,10 +1,13 @@
 package microchaos.config
 
 import microchaos.infra.Configuration
+import microchaos.infra.file.FileChangeMonitor
 import microchaos.infra.logging.loggerFor
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
+import java.nio.file.Path
+
 
 class LocalFileBehaviorConfigSource : BehaviorConfigSource {
 
@@ -17,8 +20,7 @@ class LocalFileBehaviorConfigSource : BehaviorConfigSource {
     }
 
     override fun loadConfiguration(): InputStream {
-        val filePath = Configuration.localFileConfigPath
-            ?: throw IllegalArgumentException("Local file path configuration not found")
+        val filePath = getConfigFilePath()
         try {
             logger.info("Loading configuration from local file: $filePath")
             return FileInputStream(filePath)
@@ -28,4 +30,14 @@ class LocalFileBehaviorConfigSource : BehaviorConfigSource {
         }
     }
 
+    override fun onConfigChanged(listener: ConfigChangeListener) {
+        val watchedFile = Path.of(this.getConfigFilePath())
+        FileChangeMonitor{
+          logger.info("Reloading configuration from local file: ${it.toString()}")
+          listener(FileInputStream(it.toFile()))
+        }.watch(watchedFile)
+    }
+
+    private fun getConfigFilePath() = (Configuration.localFileConfigPath
+        ?: throw IllegalArgumentException("Local file path configuration not found"))
 }
