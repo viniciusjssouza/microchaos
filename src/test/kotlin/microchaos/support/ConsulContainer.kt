@@ -13,7 +13,7 @@ open class ConsulContainer(dockerImageName: String) : GenericContainer<ConsulCon
     fun withDefaultConfig(): ConsulContainer {
         return this
             .withNetworkMode("host")
-            .withCommand("consul agent -server -bind=0.0.0.0 -advertise=127.0.0.1 -bootstrap-expect=1 -data-dir=/consul/data")
+            .withCommand("consul agent -server -bind=0.0.0.0 -advertise=127.0.0.1 -bootstrap -data-dir=/consul/data")
             .withLogConsumer(Slf4jLogConsumer(log))
     }
 

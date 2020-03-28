@@ -1,11 +1,13 @@
 package microchaos.config
 
 import com.orbitz.consul.Consul
+import com.orbitz.consul.cache.KVCache
+import com.orbitz.consul.model.kv.Value
 import microchaos.infra.Configuration
 import microchaos.infra.logging.loggerFor
 import java.io.ByteArrayInputStream
 import java.io.InputStream
-import java.lang.IllegalStateException
+import java.util.*
 
 
 class ConsulBehaviorConfigSource : BehaviorConfigSource {
@@ -26,22 +28,42 @@ class ConsulBehaviorConfigSource : BehaviorConfigSource {
 
     override fun loadConfiguration(): InputStream {
         val keyValueClient = client.keyValueClient()
-        return keyValueClient
-            .getValueAsString(Configuration.serviceName)
+        val consulValue = keyValueClient.getValue(Configuration.serviceName)
+        return this.readValue(consulValue)
+    }
+
+    override fun onConfigChanged(listener: ConfigChangeListener) {
+        val kvClient = client.keyValueClient()
+        val cache = KVCache.newCache(kvClient, Configuration.serviceName)
+        cache.addListener { newValues ->
+            log.info("Reloading config for service '${Configuration.serviceName}'")
+            val newValue = newValues.values
+                .stream()
+                .filter { value -> value.key == Configuration.serviceName }
+                .findFirst()
+            val inputStream = this.readValue(newValue)
+            listener(inputStream)
+            log.info("Config for service '${Configuration.serviceName}' reloaded")
+        }
+        cache.start()
+    }
+
+    private fun readValue(consulValue: Optional<Value?>): InputStream {
+        return consulValue
             .orElseThrow {
-                ServiceConfigNotFoundException("Config for service ${Configuration.serviceName} not found.")
+                ServiceConfigNotFoundException("Config for service '${Configuration.serviceName}' not found.")
+            }?.let {
+                it.valueAsString.orElseThrow {
+                    IllegalStateException("Config value not found for service '${Configuration.serviceName}'.")
+                }
             }?.let {
                 ByteArrayInputStream(it.toByteArray())
             } ?: throw IllegalStateException("Error while reading config for service ${Configuration.serviceName}")
     }
 
-    override fun onConfigChanged(listener: ConfigChangeListener) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     fun putConfiguration(serviceName: String, config: String) {
-       val keyValueClient = client.keyValueClient()
-       keyValueClient.putValue(serviceName, config)
+        val keyValueClient = client.keyValueClient()
+        keyValueClient.putValue(serviceName, config)
     }
 
     private fun createClient(): Consul {
@@ -50,5 +72,4 @@ class ConsulBehaviorConfigSource : BehaviorConfigSource {
             .withUrl(Configuration.consulUrl)
             .build()
     }
-
 }
