@@ -4,10 +4,10 @@ import microchaos.model.ServiceModel
 import microchaos.parser.ServiceSpecParser
 import java.lang.IllegalArgumentException
 
-class Configuration(private val configSources: Array<ConfigSource>, private val parser: ServiceSpecParser) {
+class BehaviorConfig(private val configSources: Array<BehaviorConfigSource>, private val parser: ServiceSpecParser) {
 
     fun load(): ServiceModel {
-        configSources.find(ConfigSource::canBeUsed)?.let { configSource ->
+        configSources.find(BehaviorConfigSource::canBeUsed)?.let { configSource ->
             val inputStream = configSource.loadConfiguration()
             val allLines = inputStream.bufferedReader().use {
                 it.readText()

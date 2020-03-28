@@ -1,15 +1,15 @@
 package microchaos
 
-import microchaos.config.Configuration
-import microchaos.config.LocalFileConfigSource
+import microchaos.config.BehaviorConfig
+import microchaos.config.LocalFileBehaviorConfigSource
 import microchaos.model.ktor.KtorImplFactory
 import microchaos.parser.YamlBehaviorSpecParser
 
 fun main(args: Array<String>) {
     val implFactory = KtorImplFactory()
-    val config = Configuration(
+    val config = BehaviorConfig(
         arrayOf(
-            LocalFileConfigSource()
+            LocalFileBehaviorConfigSource()
         ),
         YamlBehaviorSpecParser(implFactory)
     )
