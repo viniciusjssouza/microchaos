@@ -4,7 +4,8 @@ abstract class ImplFactory {
 
     private val mappers = mapOf<Class<out Any>, (Any) -> Any>(
         Service::class.java to { source -> this.getServiceImpl(source as Service) },
-        Endpoint::class.java to { source -> this.getEndpointImpl(source as Endpoint) }
+        Endpoint::class.java to { source -> this.getEndpointImpl(source as Endpoint) },
+        Command::class.java to { source -> this.getCommandImpl(source as Command) }
     )
 
     abstract fun getServiceImpl(service: Service): Service
@@ -13,7 +14,7 @@ abstract class ImplFactory {
 
     fun hasRegisteredMapper(modelClass: Class<out Any>) = mappers.containsKey(modelClass)
 
-    fun getMapper(modelClass: Class<out Any>): (Any) -> Any  {
+    fun getMapper(modelClass: Class<out Any>): (Any) -> Any {
         return mappers.getOrElse(modelClass, {
             throw IllegalArgumentException("No mapper found for model class ${modelClass.name}")
         })

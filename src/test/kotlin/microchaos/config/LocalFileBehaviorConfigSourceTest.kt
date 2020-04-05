@@ -2,13 +2,19 @@ package microchaos.config
 
 import io.mockk.every
 import io.mockk.mockkObject
+import io.mockk.unmockkAll
 import microchaos.infra.Configuration
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
+import org.junit.jupiter.api.parallel.ResourceLock
 import java.io.File
 
+@ResourceLock("configuration")
 internal class LocalFileBehaviorConfigSourceTest {
 
     private val configSource = LocalFileBehaviorConfigSource()
@@ -17,6 +23,11 @@ internal class LocalFileBehaviorConfigSourceTest {
     @BeforeEach
     fun setupConfiguration() {
         mockkObject(Configuration)
+    }
+
+    @AfterEach
+    fun afterEach() {
+        unmockkAll()
     }
 
     @Test
@@ -54,9 +65,9 @@ internal class LocalFileBehaviorConfigSourceTest {
             var reloaded = false
 
             configSource.onConfigChanged { reloaded = true }
-            Thread.sleep(20)
+            Thread.sleep(50)
             tmpFile.writeText("Change!")
-            Thread.sleep(20)
+            Thread.sleep(100)
 
             assertThat(reloaded).isTrue()
         } finally {

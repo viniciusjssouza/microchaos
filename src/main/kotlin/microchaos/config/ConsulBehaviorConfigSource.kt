@@ -46,6 +46,7 @@ class ConsulBehaviorConfigSource : BehaviorConfigSource {
             log.info("Config for service '${Configuration.serviceName}' reloaded")
         }
         cache.start()
+        log.info("Watching for changes on key '${Configuration.serviceName}'")
     }
 
     private fun readValue(consulValue: Optional<Value?>): InputStream {

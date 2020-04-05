@@ -7,7 +7,7 @@ import kotlin.concurrent.thread
 
 class FileChangeMonitor(private val listener: (Path) -> Unit) {
 
-    var stopped = false
+    private var stopped = false
 
     fun stop() {
         stopped = true

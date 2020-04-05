@@ -10,6 +10,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import java.io.FileInputStream
+import java.io.InputStream
+import kotlin.concurrent.thread
 
 internal class BehaviorConfigTest {
 
@@ -22,13 +24,18 @@ internal class BehaviorConfigTest {
     class LocalFileBehaviorConfigSource : BehaviorConfigSource {
         override fun canBeUsed() = true
         override fun loadConfiguration() = FileInputStream(ModelFiles.simpleService())
-        override fun onConfigChanged(listener: ConfigChangeListener) = throw UnsupportedOperationException()
+        override fun onConfigChanged(listener: ConfigChangeListener) {
+            thread {
+                Thread.sleep(50)
+                listener(InputStream.nullInputStream())
+            }
+        }
     }
 
     private val parser = mockk<ServiceSpecParser>()
 
     @Test
-    fun `when no config source can be used`() {
+    fun `load config when no config source can be used`() {
         val config = BehaviorConfig(
             arrayOf(
                 NotApplicableBehaviorConfigSource()
@@ -39,7 +46,7 @@ internal class BehaviorConfigTest {
     }
 
     @Test
-    fun `when a config source is used`() {
+    fun `load config when a config source is used`() {
         val config = BehaviorConfig(
             arrayOf(
                 NotApplicableBehaviorConfigSource(),
@@ -52,4 +59,24 @@ internal class BehaviorConfigTest {
         verify { parser.parse(any()) }
     }
 
+    @Test
+    fun `on model change`() {
+        var changed = false
+        val config = BehaviorConfig(
+            arrayOf(
+                NotApplicableBehaviorConfigSource(),
+                LocalFileBehaviorConfigSource()
+            ),
+            parser
+        )
+        every { parser.parse(any()) } returns SampleServices.simpleService
+        config.onModelChange { model ->
+            changed = true
+            assertThat(model).isEqualTo(SampleServices.simpleService)
+        }
+
+        Thread.sleep(100)
+        verify { parser.parse(any()) }
+        assertThat(changed).isTrue()
+    }
 }

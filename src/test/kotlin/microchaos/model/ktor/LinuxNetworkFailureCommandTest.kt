@@ -7,6 +7,8 @@ import microchaos.model.Command
 import microchaos.model.Distribution
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
 
 internal class LinuxNetworkFailureCommandTest {
 

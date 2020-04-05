@@ -31,6 +31,7 @@ class LocalFileBehaviorConfigSource : BehaviorConfigSource {
     }
 
     override fun onConfigChanged(listener: ConfigChangeListener) {
+        logger.info("Watching for changes on file '${this.getConfigFilePath()}'")
         val watchedFile = Path.of(this.getConfigFilePath())
         FileChangeMonitor{
           logger.info("Reloading configuration from local file: ${it.toString()}")

@@ -1,11 +1,11 @@
 package microchaos.model.ktor
 
-import microchaos.model.Behavior
-import microchaos.model.Command
-import microchaos.model.Distribution
-import microchaos.model.Endpoint
+import microchaos.model.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+
 
 internal class KtorImplFactoryTest {
 
@@ -60,5 +60,11 @@ internal class KtorImplFactoryTest {
         val command = Command("applicationShutdown")
         val ktorCommand = implFactory.getCommandImpl(command)
         assertThat(ktorCommand).isInstanceOf(ApplicationShutdownCommand::class.java)
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes= [Service::class, Endpoint::class, Command::class])
+    fun `map model classes`(modelClass: Class<*>) {
+        assertThat(implFactory.getMapper(modelClass)).isNotNull
     }
 }

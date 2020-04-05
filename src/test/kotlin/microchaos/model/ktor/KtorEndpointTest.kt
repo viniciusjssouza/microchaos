@@ -16,8 +16,8 @@ import org.junit.jupiter.api.Test
 
 internal class KtorEndpointTest {
 
-    private val ioEndpoint = SampleServices.simpleService.service.endpoints.first { it.path.equals("/some-io") }
-    private val requestEndpoint = SampleServices.simpleService.service.endpoints.first { it.path.equals("/google") }
+    private val ioEndpoint = SampleServices.simpleService.service.endpoints.first { it.path == "/some-io" }
+    private val requestEndpoint = SampleServices.simpleService.service.endpoints.first { it.path == "/google" }
     private val routing: Routing = mockk<Routing>()
 
     @BeforeEach
@@ -32,7 +32,7 @@ internal class KtorEndpointTest {
         val endpoint = spyk(originalEndpoint)
         endpoint.build(routing)
 
-        verify { endpoint.onRequest(routing, originalEndpoint.requestRunnerFn) }
+        verify { endpoint.setupEndpoint(routing, originalEndpoint.requestRunnerFn) }
         verify { routing.get(path = ioEndpoint.path, body = any()) }
     }
 
@@ -42,12 +42,12 @@ internal class KtorEndpointTest {
         val endpoint = spyk(originalEndpoint)
         endpoint.build(routing)
 
-        verify { endpoint.onRequest(routing, originalEndpoint.requestRunnerFn) }
+        verify { endpoint.setupEndpoint(routing, originalEndpoint.requestRunnerFn) }
         verify { routing.post(path = requestEndpoint.path, body = any()) }
     }
 
     @Test
-    fun `run all the command`() {
+    fun `run all the commands`() {
         val executions = Array(3) { mockk<Command>() }.toList()
         executions.forEach { every { it.run() } returns it }
         val endpoint = PostEndpoint(Endpoint("/test", "get", behavior = Behavior(executions)))

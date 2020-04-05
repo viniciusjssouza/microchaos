@@ -14,6 +14,6 @@ internal class ApplicationShutdownCommand(
 
     override fun run(): Any {
         log.error("Finishing application with some error")
-        return System.exit(1)
+        exitProcess(1)
     }
 }

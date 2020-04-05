@@ -17,5 +17,12 @@ open class ConsulContainer(dockerImageName: String) : GenericContainer<ConsulCon
             .withLogConsumer(Slf4jLogConsumer(log))
     }
 
+    override fun start() {
+        log.info("Waiting consul to start...")
+        super.start()
+        Thread.sleep(3000)
+        log.info("Consul started")
+    }
+
 
 }

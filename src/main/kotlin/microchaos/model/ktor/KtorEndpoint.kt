@@ -37,16 +37,16 @@ abstract class KtorEndpoint(
     constructor(endpoint: Endpoint) : this(endpoint.path, endpoint.method, endpoint.behavior)
 
     fun build(routing: Routing): KtorEndpoint {
-        onRequest(routing, this.requestRunnerFn)
+        setupEndpoint(routing, this.requestRunnerFn)
         return this
     }
 
-    abstract fun onRequest(routing: Routing, action: () -> Unit)
+    abstract fun setupEndpoint(routing: Routing, action: () -> Unit)
 }
 
 class PostEndpoint(endpoint: Endpoint) : KtorEndpoint(endpoint) {
 
-    override fun onRequest(routing: Routing, action: () -> Unit) {
+    override fun setupEndpoint(routing: Routing, action: () -> Unit) {
         logger.info("Mapping POST endpoint for path '$path'")
         routing.post(this@PostEndpoint.path) {
             action()
@@ -56,7 +56,7 @@ class PostEndpoint(endpoint: Endpoint) : KtorEndpoint(endpoint) {
 
 class GetEndpoint(endpoint: Endpoint) : KtorEndpoint(endpoint) {
 
-    override fun onRequest(routing: Routing, action: () -> Unit) {
+    override fun setupEndpoint(routing: Routing, action: () -> Unit) {
         logger.info("Mapping GET endpoint for path '$path'")
         routing.get(this@GetEndpoint.path) {
             action()

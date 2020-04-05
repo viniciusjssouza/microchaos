@@ -8,7 +8,8 @@ import microchaos.parser.YamlBehaviorSpecParser
 import microchaos.support.ConsulContainer
 import microchaos.support.ModelFiles
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import java.io.FileReader

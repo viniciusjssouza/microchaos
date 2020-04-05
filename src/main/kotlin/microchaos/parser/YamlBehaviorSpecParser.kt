@@ -26,7 +26,7 @@ class YamlBehaviorSpecParser(private val implFactory: ImplFactory = NonRunnableM
 
     private fun customDeserializerModule(): SimpleModule {
         val module = SimpleModule()
-       module.setDeserializerModifier(DeserializerWrapper(implFactory))
+        module.setDeserializerModifier(DeserializerWrapper(implFactory))
         return module
     }
 
@@ -38,10 +38,10 @@ class YamlBehaviorSpecParser(private val implFactory: ImplFactory = NonRunnableM
 class DeserializerWrapper(private val implFactory: ImplFactory) : BeanDeserializerModifier() {
 
     override fun modifyDeserializer(
-        config: DeserializationConfig?,  beanDesc: BeanDescription, deserializer: JsonDeserializer<*>?
+        config: DeserializationConfig?, beanDesc: BeanDescription, deserializer: JsonDeserializer<*>?
     ): JsonDeserializer<*>? {
-        val modifiedFromParent = deserializer ?:
-            throw IllegalArgumentException("No deserializer found for type ${beanDesc.beanClass.name}")
+        val modifiedFromParent =
+            deserializer ?: throw IllegalArgumentException("No deserializer found for type ${beanDesc.beanClass.name}")
         return if (implFactory.hasRegisteredMapper(beanDesc.beanClass)) {
             val mapperFn = implFactory.getMapper(beanDesc.beanClass)
             ModelMapperDeserializer(beanDesc.beanClass, modifiedFromParent, mapperFn)

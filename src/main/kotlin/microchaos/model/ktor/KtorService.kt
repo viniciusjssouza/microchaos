@@ -43,8 +43,8 @@ class KtorService(
         return this.server.start(wait)
     }
 
-    fun stop() {
-        return this.server.stop(100, 500, TimeUnit.MILLISECONDS)
+    override fun stop() {
+        this.server.stop(100, 500, TimeUnit.MILLISECONDS)
     }
 
     fun getRuntimePort(): Int {

@@ -22,7 +22,7 @@ class SystemExitExtension(private val expectedStatus: Int = 0) : BeforeEachCallb
 
     override fun afterEach(context: ExtensionContext?) {
         if (noExitManager.isCheckExitCalled) {
-            val status = noExitManager.getStatusOfFirstCheckExitCall()
+            val status = noExitManager.statusOfFirstCheckExitCall
             assertEquals(
                 expectedStatus,
                 status,

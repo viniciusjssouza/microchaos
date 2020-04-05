@@ -2,15 +2,15 @@ package microchaos.config
 
 import io.mockk.every
 import io.mockk.mockkObject
+import io.mockk.unmockkAll
 import microchaos.infra.Configuration
-import microchaos.support.ConsulContainer
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.ClassRule
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.testcontainers.junit.jupiter.Container
-import org.testcontainers.junit.jupiter.Testcontainers
+import org.junit.jupiter.api.parallel.ResourceLock
 
+@ResourceLock("configuration")
 internal class ConsulBehaviorConfigSourceTest {
 
     private val configSource = ConsulBehaviorConfigSource()
@@ -18,6 +18,11 @@ internal class ConsulBehaviorConfigSourceTest {
     @BeforeEach
     fun setupConfiguration() {
         mockkObject(Configuration)
+    }
+
+    @AfterEach
+    fun afterEach() {
+        unmockkAll()
     }
 
     @Test
