@@ -9,16 +9,19 @@ data class Behavior(
     val rangeEnds: Array<Double> by lazy { this.initRangeEnds() }
     val totalProbability = response.sumByDouble { it.probability }
 
-    fun drawResponse(randomizer: Random = Random()): Response {
-        assert(this.response.isNotEmpty()) { "Empty response list" }
+    fun drawResponse(randomizer: Random = Random()): Optional<Response> {
+        if (this.response.isEmpty()) {
+            return Optional.empty()
+        }
         val sample = randomizer.nextDouble()
         val selectedRange = rangeEnds.binarySearch(sample)
-        return if (selectedRange >= 0) {
+        val response = if (selectedRange >= 0) {
             this.response[minOf(selectedRange + 1, this.response.size - 1)]
         } else {
             val insertionPoint = -(selectedRange + 1)
             this.response[insertionPoint]
         }
+        return Optional.of(response)
     }
 
     private fun initRangeEnds(): Array<Double> {

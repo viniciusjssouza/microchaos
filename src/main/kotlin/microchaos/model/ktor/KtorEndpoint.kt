@@ -1,5 +1,10 @@
 package microchaos.model.ktor
 
+import io.ktor.application.ApplicationCall
+import io.ktor.application.call
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.response.respondText
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.post
@@ -30,36 +35,41 @@ abstract class KtorEndpoint(
         }
     }
 
-    val requestRunnerFn = {
-        behavior.commands.forEach { command -> command.run() }
-    }
-
     constructor(endpoint: Endpoint) : this(endpoint.path, endpoint.method, endpoint.behavior)
 
+    suspend fun handleRequest(call: ApplicationCall) {
+        behavior.commands.forEach { command -> command.run() }
+        val responseModel = this.behavior.drawResponse()
+        if (responseModel.isPresent) {
+            val statusCode = HttpStatusCode.fromValue(responseModel.get().status)
+            call.respondText(responseModel.get().content, ContentType.Text.Plain, statusCode)
+        }
+    }
+
     fun build(routing: Routing): KtorEndpoint {
-        setupEndpoint(routing, this.requestRunnerFn)
+        setupEndpoint(routing, this::handleRequest)
         return this
     }
 
-    abstract fun setupEndpoint(routing: Routing, action: () -> Unit)
+    abstract fun setupEndpoint(routing: Routing,  action: suspend (ApplicationCall) -> Unit)
 }
 
 class PostEndpoint(endpoint: Endpoint) : KtorEndpoint(endpoint) {
 
-    override fun setupEndpoint(routing: Routing, action: () -> Unit) {
+    override fun setupEndpoint(routing: Routing, action: suspend (ApplicationCall) -> Unit) {
         logger.info("Mapping POST endpoint for path '$path'")
         routing.post(this@PostEndpoint.path) {
-            action()
+            action(call)
         }
     }
 }
 
 class GetEndpoint(endpoint: Endpoint) : KtorEndpoint(endpoint) {
 
-    override fun setupEndpoint(routing: Routing, action: () -> Unit) {
+    override fun setupEndpoint(routing: Routing, action: suspend (ApplicationCall) -> Unit) {
         logger.info("Mapping GET endpoint for path '$path'")
         routing.get(this@GetEndpoint.path) {
-            action()
+            action(call)
         }
     }
 }

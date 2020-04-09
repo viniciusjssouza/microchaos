@@ -3,7 +3,6 @@ package microchaos.model
 import microchaos.support.BiasedRandom
 import microchaos.support.closeToComparator
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -66,7 +65,7 @@ internal class BehaviorTest {
     @Test
     fun `draw response when the response list is empty`() {
         val behavior = Behavior(commands = emptyList())
-        Assertions.assertThrows(AssertionError::class.java) { behavior.drawResponse() }
+        assertThat(behavior.drawResponse().isEmpty).isTrue()
     }
 
     @ParameterizedTest
@@ -74,7 +73,7 @@ internal class BehaviorTest {
     fun `draw response`(testCase: DrawTestCase) {
         val behavior = Behavior(commands = emptyList(), response = responsesForTestCase(testCase))
         val fakeRandom = BiasedRandom(nextDouble = testCase.randomResult)
-        val response = behavior.drawResponse(fakeRandom)
+        val response = behavior.drawResponse(fakeRandom).get()
         assertThat(response).isSameAs(behavior.response[testCase.expectedResponseIdx])
     }
 
