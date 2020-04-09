@@ -12,6 +12,8 @@ import microchaos.infra.logging.loggerFor
 import microchaos.model.Behavior
 import microchaos.model.Endpoint
 
+typealias RequestHandler = suspend (ApplicationCall) -> Unit
+
 abstract class KtorEndpoint(
     path: String,
     method: String,
@@ -51,12 +53,12 @@ abstract class KtorEndpoint(
         return this
     }
 
-    abstract fun setupEndpoint(routing: Routing,  action: suspend (ApplicationCall) -> Unit)
+    abstract fun setupEndpoint(routing: Routing,  action: RequestHandler)
 }
 
 class PostEndpoint(endpoint: Endpoint) : KtorEndpoint(endpoint) {
 
-    override fun setupEndpoint(routing: Routing, action: suspend (ApplicationCall) -> Unit) {
+    override fun setupEndpoint(routing: Routing, action: RequestHandler) {
         logger.info("Mapping POST endpoint for path '$path'")
         routing.post(this@PostEndpoint.path) {
             action(call)

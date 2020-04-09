@@ -1,12 +1,11 @@
 package microchaos.model.ktor
 
+import io.ktor.application.ApplicationCall
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.post
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.spyk
-import io.mockk.verify
+import io.mockk.*
+import kotlinx.coroutines.runBlocking
 import microchaos.model.SampleServices
 import microchaos.model.Behavior
 import microchaos.model.Endpoint
@@ -32,7 +31,7 @@ internal class KtorEndpointTest {
         val endpoint = spyk(originalEndpoint)
         endpoint.build(routing)
 
-        verify { endpoint.setupEndpoint(routing, originalEndpoint.requestRunnerFn) }
+        verify { endpoint.setupEndpoint(routing, any()) }
         verify { routing.get(path = ioEndpoint.path, body = any()) }
     }
 
@@ -42,17 +41,20 @@ internal class KtorEndpointTest {
         val endpoint = spyk(originalEndpoint)
         endpoint.build(routing)
 
-        verify { endpoint.setupEndpoint(routing, originalEndpoint.requestRunnerFn) }
+        verify { endpoint.setupEndpoint(routing, any()) }
         verify { routing.post(path = requestEndpoint.path, body = any()) }
     }
 
     @Test
     fun `run all the commands`() {
         val executions = Array(3) { mockk<Command>() }.toList()
+        val appCall = mockk<ApplicationCall>()
         executions.forEach { every { it.run() } returns it }
         val endpoint = PostEndpoint(Endpoint("/test", "get", behavior = Behavior(executions)))
-        endpoint.requestRunnerFn()
-
+        runBlocking {
+            endpoint.handleRequest(appCall)
+        }
+        Thread.sleep(50)
         executions.forEach { verify { it.run() } }
     }
 }

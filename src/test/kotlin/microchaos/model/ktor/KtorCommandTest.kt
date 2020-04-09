@@ -31,7 +31,7 @@ internal class KtorCommandTest {
         val execTime = measureExecutionTime {
             runner.run()
         }
-        assertThat(execTime).isCloseTo(distribution.mean.toLong(), Offset.offset(100L))
+        assertThat(execTime).isCloseTo(distribution.mean.toLong(), Offset.offset(200L))
     }
 
     @Test
