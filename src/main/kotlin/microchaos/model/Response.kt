@@ -6,4 +6,7 @@ data class Response(
     val content: String = ""
 ) {
 
+    init {
+        assert(this.probability >= 0) { "Probability cannot be less than 0" }
+    }
 }
