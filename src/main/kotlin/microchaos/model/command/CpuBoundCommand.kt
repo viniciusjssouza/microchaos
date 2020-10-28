@@ -13,7 +13,7 @@ import java.util.stream.IntStream
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 
-open class CpuBoundCommand(duration: Distribution): TimeBoundedCommand(duration) {
+class CpuBoundCommand(duration: Distribution): TimeBoundedCommand(duration) {
     companion object {
         private val log =
             loggerFor<CpuBoundCommand>()

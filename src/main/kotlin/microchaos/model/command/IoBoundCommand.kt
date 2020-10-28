@@ -4,7 +4,7 @@ import microchaos.infra.logging.loggerFor
 import microchaos.infra.number.round
 import microchaos.model.Distribution
 
-open class IoBoundCommand(duration: Distribution): TimeBoundedCommand(duration) {
+class IoBoundCommand(duration: Distribution): TimeBoundedCommand(duration) {
     companion object {
         private val log =
             loggerFor<IoBoundCommand>()

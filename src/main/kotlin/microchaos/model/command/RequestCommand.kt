@@ -5,7 +5,7 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpResponse
 
-open class RequestCommand(
+class RequestCommand(
     private val httpRequest: HttpRequest?
 ): Command() {
 

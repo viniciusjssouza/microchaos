@@ -6,7 +6,7 @@ import microchaos.infra.network.NetworkInterface
 import microchaos.infra.number.round
 import microchaos.model.Distribution
 
-internal class NetworkFailureCommand(
+class NetworkFailureCommand(
     duration: Distribution,
     private val environment: Environment = Environment,
     private val networkInterface: NetworkInterface = NetworkInterface("eth0")
