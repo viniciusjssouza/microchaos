@@ -1,21 +1,17 @@
-package microchaos.model.ktor
+package microchaos.model
 
 import io.mockk.*
 import microchaos.infra.Environment
 import microchaos.infra.network.NetworkInterface
-import microchaos.model.Command
-import microchaos.model.Distribution
+import microchaos.model.command.NetworkFailureCommand
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.parallel.Execution
-import org.junit.jupiter.api.parallel.ExecutionMode
 
-internal class LinuxNetworkFailureCommandTest {
+internal class NetworkFailureCommandTest {
 
     private val environment = mockk<Environment>()
     private val networkInterface = mockk<NetworkInterface>()
-    private val commandSpec = Command("test", Distribution("constant", 1000.0))
-    private val command = LinuxNetworkFailureCommand(commandSpec, environment, networkInterface)
+    private val command = NetworkFailureCommand(Distribution("constant", 1000.0), environment, networkInterface)
 
     @Test
     fun run() {

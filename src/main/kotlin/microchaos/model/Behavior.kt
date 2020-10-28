@@ -1,5 +1,6 @@
 package microchaos.model
 
+import microchaos.model.command.Command
 import java.util.*
 
 data class Behavior(

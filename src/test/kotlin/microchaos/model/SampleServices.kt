@@ -1,6 +1,6 @@
 package microchaos.model
 
-import microchaos.model.*
+import microchaos.model.command.*
 
 object SampleServices {
     val simpleService = ServiceModel(
@@ -14,8 +14,7 @@ object SampleServices {
                     method = "get",
                     behavior = Behavior(
                         commands = arrayListOf(
-                            Command(
-                                type = "ioBounded",
+                            IoBoundCommand(
                                 duration = Distribution(type = "logNormal", mean = 6.0, stdDeviation = 0.25)
                             )
                         ),
@@ -29,8 +28,7 @@ object SampleServices {
                     method = "get",
                     behavior = Behavior(
                         commands = arrayListOf(
-                            Command(
-                                type = "cpuBounded",
+                            CpuBoundCommand(
                                 duration = Distribution(type = "logNormal", mean = 6.0, stdDeviation = 0.25)
                             )
                         ),
@@ -45,12 +43,10 @@ object SampleServices {
                     method = "post",
                     behavior = Behavior(
                         commands = arrayListOf(
-                            Command(
-                                type = "cpuBounded",
+                            CpuBoundCommand(
                                 duration = Distribution(type = "logNormal", mean = 6.0, stdDeviation = 0.25)
                             ),
-                            Command(
-                                type = "request",
+                            RequestCommand(
                                 httpRequest = HttpRequest(
                                     method = "get",
                                     target = "https://www.google.com/complete/search?q=vai&cp=3&client=psy-ab&pq=vai"
@@ -76,21 +72,22 @@ object SampleServices {
                 PeriodicTask(
                     period = 5000,
                     behavior = Behavior(
-                        listOf(Command(
-                            type = "networkFailure",
-                            duration = Distribution(
-                                type = "constant",
-                                mean = 10_000.0
+                        listOf(
+                            NetworkFailureCommand(
+                                duration = Distribution(
+                                    type = "constant",
+                                    mean = 10_000.0
+                                )
                             )
-                        ))
+                        )
                     )
                 ),
                 PeriodicTask(
                     period = 50_000,
                     behavior = Behavior(
-                        listOf(Command(
-                            type = "terminateProcess"
-                        ))
+                        listOf(
+                            ApplicationShutdownCommand()
+                        )
                     )
                 )
             )

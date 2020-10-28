@@ -9,7 +9,7 @@ import kotlinx.coroutines.runBlocking
 import microchaos.model.SampleServices
 import microchaos.model.Behavior
 import microchaos.model.Endpoint
-import microchaos.model.Command
+import microchaos.model.command.Command
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
