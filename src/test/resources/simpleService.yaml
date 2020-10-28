@@ -8,11 +8,16 @@ service:
       method: "get"
       behavior:
         commands:
-          - type: "ioBounded"
-            duration:
-              type: "logNormal"
-              mean: 6
-              stdDeviation: 0.25
+          - ioBound:
+              duration:
+                type: "logNormal"
+                mean: 6
+                stdDeviation: 0.25
+          - cpuBound:
+              duration:
+                type: "logNormal"
+                mean: 6
+                stdDeviation: 0.25
         response:
           - status: 200
             content: "success"
@@ -21,11 +26,11 @@ service:
       method: "get"
       behavior:
         commands:
-          - type: "cpuBounded"
-            duration:
-              type: "logNormal"
-              mean: 6
-              stdDeviation: 0.25
+          - cpuBound:
+              duration:
+                type: "logNormal"
+                mean: 6
+                stdDeviation: 0.25
         response:
           - status: 200
             probability: 80
@@ -35,13 +40,12 @@ service:
       method: "post"
       behavior:
         commands:
-          - type: "cpuBounded"
-            duration:
-              type: "logNormal"
-              mean: 6
-              stdDeviation: 0.25
-          - type: "request"
-            httpRequest:
+          - cpuBound:
+              duration:
+                type: "logNormal"
+                mean: 6
+                stdDeviation: 0.25
+          - request:
               method: "get"
               target: "https://www.google.com/complete/search?q=vai&cp=3&client=psy-ab&pq=vai"
         response:

@@ -1,13 +1,13 @@
-package microchaos.model.ktor
+package microchaos.model.command
 
 import microchaos.infra.logging.loggerFor
 import microchaos.infra.number.round
-import microchaos.model.Command
+import microchaos.model.Distribution
 
-internal class IoBoundedCommand(command: Command) : KtorCommand(command) {
+open class IoBoundCommand(duration: Distribution): TimeBoundedCommand(duration) {
     companion object {
         private val log =
-            loggerFor<IoBoundedCommand>()
+            loggerFor<IoBoundCommand>()
     }
 
     override fun run() {

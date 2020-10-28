@@ -1,19 +1,19 @@
-package microchaos.model.ktor
+package microchaos.model.command
 
 import microchaos.infra.Environment
 import microchaos.infra.logging.loggerFor
 import microchaos.infra.network.NetworkInterface
 import microchaos.infra.number.round
-import microchaos.model.Command
+import microchaos.model.Distribution
 
-internal class LinuxNetworkFailureCommand(
-    command: Command,
+internal class NetworkFailureCommand(
+    duration: Distribution,
     private val environment: Environment = Environment,
     private val networkInterface: NetworkInterface = NetworkInterface("eth0")
-) : KtorCommand(command) {
+) : TimeBoundedCommand(duration) {
 
     companion object {
-        private val log = loggerFor<LinuxNetworkFailureCommand>()
+        private val log = loggerFor<NetworkFailureCommand>()
     }
 
     override fun run(): Any {

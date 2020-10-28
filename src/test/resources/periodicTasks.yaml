@@ -7,11 +7,11 @@ service:
     - period: 5000
       behavior:
         commands:
-          - type: "networkFailure"
-            duration:
-              type: "constant"
-              mean: 10000
+          - networkFailure:
+              duration:
+                type: "constant"
+                mean: 10000
     - period: 50000
       behavior:
         commands:
-        - type: "terminateProcess"
+          - applicationShutdown

@@ -1,11 +1,13 @@
-package microchaos.model.ktor
+package microchaos.model.command
 
-import microchaos.model.Command
+import microchaos.model.HttpRequest
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpResponse
 
-internal class RequestCommand(command: Command) : KtorCommand(command) {
+open class RequestCommand(
+    private val httpRequest: HttpRequest?
+): Command() {
 
     override fun run(): String {
         val client = HttpClient.newBuilder().build()

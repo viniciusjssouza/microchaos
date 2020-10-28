@@ -7,9 +7,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.deser.BeanDeserializerModifier
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import microchaos.model.command.Command
 import microchaos.model.ImplFactory
 import microchaos.model.NonRunnableModelFactory
 import microchaos.model.ServiceModel
+import microchaos.parser.jackson.CommandDeserialiazer
 import microchaos.parser.jackson.ModelMapperDeserializer
 import java.lang.IllegalArgumentException
 
@@ -45,6 +47,8 @@ class DeserializerWrapper(private val implFactory: ImplFactory) : BeanDeserializ
         return if (implFactory.hasRegisteredMapper(beanDesc.beanClass)) {
             val mapperFn = implFactory.getMapper(beanDesc.beanClass)
             ModelMapperDeserializer(beanDesc.beanClass, modifiedFromParent, mapperFn)
+        } else if (beanDesc.beanClass == Command::class.java) {
+          CommandDeserialiazer(deserializer)
         } else {
             modifiedFromParent
         }

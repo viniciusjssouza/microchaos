@@ -1,9 +1,9 @@
-package microchaos.model.ktor
+package microchaos.model.command
 
 import microchaos.infra.logging.debug
 import microchaos.infra.logging.loggerFor
 import microchaos.infra.number.round
-import microchaos.model.Command
+import microchaos.model.Distribution
 import java.nio.charset.Charset
 import java.util.*
 import java.util.concurrent.ExecutionException
@@ -13,10 +13,10 @@ import java.util.stream.IntStream
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 
-internal class CpuBoundedCommand(command: Command) : KtorCommand(command) {
+open class CpuBoundCommand(duration: Distribution): TimeBoundedCommand(duration) {
     companion object {
         private val log =
-            loggerFor<CpuBoundedCommand>()
+            loggerFor<CpuBoundCommand>()
     }
 
     override fun run() {

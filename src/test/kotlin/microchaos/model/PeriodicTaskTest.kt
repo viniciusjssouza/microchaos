@@ -1,11 +1,12 @@
 package microchaos.model
 
+import microchaos.model.command.Command
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class PeriodicTaskTest() {
 
-    class CountCommand : Command(type = "count") {
+    class CountCommand : Command() {
         var count = 1
 
         override fun run(): Any {
