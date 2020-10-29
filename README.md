@@ -2,9 +2,19 @@
 
 A framework/utility for building synthetic microservices with builtin fault injection and simulation.
 
-## Installation
+## Restrictions
 
-TODO
+Currently, it only works on unix-family OS, because it uses some native utilities to emulate failures, such as `netstat`.  
+
+## Setup
+
+### Ubuntu
+
+```
+sudo apt install -y net-tools
+```
+
+### Docker
 
 ## Usage
 
