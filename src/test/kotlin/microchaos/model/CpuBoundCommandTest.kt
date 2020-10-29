@@ -12,9 +12,9 @@ internal class CpuBoundCommandTest {
     @RepeatedTest(2)
     fun `run an "cpu bounded" command`() {
         val distribution = Distribution("normal", 500.0, 0.0001)
-        val runner = CpuBoundCommand(duration = distribution)
+        val command = CpuBoundCommand(duration = distribution)
         val execTime = measureExecutionTime {
-            runner.run()
+            command.run()
         }
         assertThat(execTime).isCloseTo(distribution.mean.toLong(), Offset.offset(200L))
     }

@@ -11,9 +11,9 @@ internal class IoBoundCommandTest {
     @Test
     fun `run an "io bounded" command`() {
         val distribution = Distribution("normal", 200.0, 0.0001)
-        val runner = IoBoundCommand(duration = distribution)
+        val command = IoBoundCommand(duration = distribution)
         val execTime = measureExecutionTime {
-            runner.run()
+            command.run()
         }
         assertThat(execTime).isCloseTo(distribution.mean.toLong(), Offset.offset(100L))
     }
