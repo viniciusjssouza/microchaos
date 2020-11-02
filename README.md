@@ -1,4 +1,4 @@
-# MicroChaos
+# Microchaos
 
 A framework/utility for building synthetic microservices with builtin fault injection and simulation.
 
@@ -18,11 +18,59 @@ sudo apt install -y net-tools
 
 ## Usage
 
-TODO
+### Build
+To build the application using Gradle, run in the project root folder:
+
+```bash
+./gradlew build
+```
+
+### Test
+
+```bash
+./gradlew test
+```
+
+
+### Running
+
+#### Using local file
+
+To run a service configured by a local file, use the `CONFIG_PATH` environment variable, containing the path
+of the model file. Example:
+
+```bash 
+CONFIG_PATH=./src/test/resources/simpleService.yaml ./gradlew run
+``` 
+
+#### Using Consul
+
+To run a service configured by a local file, use the `CONFIG_PATH` environment variable, containing the path
+of the model file. Example:
+
+```bash 
+CONFIG_PATH=./src/test/resources/simpleService.yaml ./gradlew run
+``` 
 
 ## Architecture
 
 TODO
+
+### Adding new commands
+
+1. Write a new class extending the `Command` class and implementing the `run` method. This method is called upon 
+receiving a new request (for services with type `web`)
+2. Register the new command class in the `microchaos.model.command.CommandMapping` file. The key added to the hash map 
+will be used to represent the command on the model file. Example:
+```
+"memoryAllocation" to MemoryAllocationCommand::class.java,
+``` 
+In the model file, this command can be declared in this way:
+```
+behavior:
+  commands:
+    - memoryAllocation:
+```
 
 ## Supported failure modes
 
