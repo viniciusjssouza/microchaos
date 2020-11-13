@@ -7,6 +7,7 @@ import microchaos.infra.logging.loggerFor
 import microchaos.model.ServiceModel
 import microchaos.model.ktor.KtorImplFactory
 import microchaos.parser.YamlBehaviorSpecParser
+import java.lang.Thread.sleep
 
 lateinit var model: ServiceModel
 val log = loggerFor("main")
@@ -22,6 +23,13 @@ fun main() {
         YamlBehaviorSpecParser(implFactory)
     ).onModelChange(::runModel)
     runModel(config.load())
+    waitActivity()
+}
+
+private fun waitActivity() {
+    while (true) {
+        sleep(200);
+    }
 }
 
 fun runModel(newModel: ServiceModel) {
@@ -32,6 +40,6 @@ fun runModel(newModel: ServiceModel) {
     }
     model = newModel
     log.info("Starting service...")
-    model.service.start(wait = true)
+    model.service.start()
     log.info("Service started")
 }

@@ -11,7 +11,7 @@ service:
           - cpuBound:
               duration:
                 type: "logNormal"
-                mean: 6
+                mean: 9
                 stdDeviation: 0.25
         response:
           - status: 200
@@ -24,7 +24,7 @@ service:
           - ioBound:
               duration:
                 type: "logNormal"
-                mean: 6
+                mean: 8
                 stdDeviation: 0.25
         response:
           - status: 200
