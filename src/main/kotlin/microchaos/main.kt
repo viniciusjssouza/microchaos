@@ -26,9 +26,13 @@ fun main() {
     waitActivity()
 }
 
+/**
+ * This is required to keep the application running upon reloading the configuration, otherwise, when Ktor server is
+ * shutdown, the application would finish. With this sleep, the application continues to run, even when Ktor is stopped.
+ */
 private fun waitActivity() {
     while (true) {
-        sleep(200);
+        sleep(500);
     }
 }
 
