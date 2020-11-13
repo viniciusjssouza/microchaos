@@ -8,7 +8,7 @@ open class Service (
     val periodicTasks: List<PeriodicTask> = arrayListOf()
 ) {
 
-    open fun start(wait: Boolean): Any = throw NotImplementedError("Only service implementations can be started")
+    open fun start(): Any = throw NotImplementedError("Only service implementations can be started")
 
     open fun stop(): Unit = throw NotImplementedError("Only service implementations can be started")
 

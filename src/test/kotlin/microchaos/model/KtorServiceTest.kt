@@ -37,7 +37,7 @@ internal class KtorServiceTest {
 
     private fun runInApplication(service: KtorService, testFunc: (builder: KtorService) -> Unit) {
         try {
-            service.start(wait = false)
+            service.start()
             testFunc(service)
         } finally {
             service.stop()

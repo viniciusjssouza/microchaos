@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.ValueSource
 internal class MemoryAllocationCommandTest {
 
     @ParameterizedTest
-    @ValueSource(ints = [800, 10_000, 30_000])
+    @ValueSource(ints = [1000, 10_000, 100_000])
     fun `run a memory allocation command`(amount: Int) {
         val command = MemoryAllocationCommand(amount)
         val allocatedMemory = measureMemoryAllocationInKB {
