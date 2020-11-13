@@ -46,7 +46,7 @@ internal class CpuBoundedCommand(command: Command) : KtorCommand(command) {
     private fun cpuIntensiveTask(ioTime: Double): Boolean {
         log.debug { "Starting for thread: ${Thread.currentThread().id}" }
         val startTime = System.currentTimeMillis()
-        // perform some encryption algorithm to keep cpu busy
+        // perform some encryption algorithm to keep cpu bexaustão de recursos (CPU e memória)usy
         val keyGenerator = KeyGenerator.getInstance("AES")
         keyGenerator.init(128)
         val secretKey = keyGenerator.generateKey()

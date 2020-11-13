@@ -28,7 +28,7 @@ internal class ConsulBehaviorConfigSourceIT {
         @JvmStatic
         fun setupConfiguration() {
             mockkObject(Configuration)
-            val consulUrl = "http://localhost:8500"
+            val consulUrl = "http://${consulContainer.containerIpAddress}:8500"
             every { Configuration.consulUrl } returns consulUrl
             every { Configuration.serviceName } returns serviceName
         }
