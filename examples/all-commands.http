@@ -1,0 +1,23 @@
+POST {{baseUrl}}:8080/cpu-bound
+Content-Type: application/json
+
+###
+POST {{baseUrl}}:8080/io-bound
+Content-Type: application/json
+
+###
+POST {{baseUrl}}:8080/application-shutdown
+Content-Type: application/json
+
+###
+GET {{baseUrl}}:8080/memory-allocation
+Content-Type: application/json
+
+###
+GET {{baseUrl}}:8080/network-failure
+Content-Type: application/json
+
+###
+GET {{baseUrl}}:8080/request
+Content-Type: application/json
+

@@ -1,10 +1,11 @@
-package microchaos.model.ktor
+package microchaos.model
 
 import io.ktor.routing.Routing
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import microchaos.model.SampleServices
+import microchaos.model.ktor.KtorEndpoint
+import microchaos.model.ktor.KtorService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -36,7 +37,7 @@ internal class KtorServiceTest {
 
     private fun runInApplication(service: KtorService, testFunc: (builder: KtorService) -> Unit) {
         try {
-            service.start(wait = false)
+            service.start()
             testFunc(service)
         } finally {
             service.stop()

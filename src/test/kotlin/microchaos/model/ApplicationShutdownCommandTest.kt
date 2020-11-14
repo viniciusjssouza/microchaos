@@ -1,6 +1,6 @@
-package microchaos.model.ktor
+package microchaos.model
 
-import microchaos.model.Command
+import microchaos.model.command.ApplicationShutdownCommand
 import microchaos.support.SystemExitExtension
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.*
@@ -13,7 +13,7 @@ class ApplicationShutdownCommandTest {
 
     @Test
     fun `run command`() {
-        val shutdownCommand = ApplicationShutdownCommand(Command("applicationShutdown"))
+        val shutdownCommand = ApplicationShutdownCommand()
         shutdownCommand.run()
     }
 }

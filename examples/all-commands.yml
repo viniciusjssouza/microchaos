@@ -1,0 +1,77 @@
+service:
+  name: "allCommandsSample"
+  type: "web"
+  port: "8080"
+
+  endpoints:
+    - path: "/cpu-bound"
+      method: "post"
+      behavior:
+        commands:
+          - cpuBound:
+              duration:
+                type: "logNormal"
+                mean: 9
+                stdDeviation: 0.25
+        response:
+          - status: 200
+            content: "success"
+            probability: 100
+    - path: "/io-bound"
+      method: "post"
+      behavior:
+        commands:
+          - ioBound:
+              duration:
+                type: "logNormal"
+                mean: 8
+                stdDeviation: 0.25
+        response:
+          - status: 200
+            content: "success"
+            probability: 100
+    - path: "/application-shutdown"
+      method: "post"
+      behavior:
+        commands:
+          - applicationShutdown
+        response:
+          - status: 200
+            content: "success"
+            probability: 100
+    - path: "/memory-allocation"
+      method: "get"
+      behavior:
+        commands:
+          - memoryAllocation:
+              amount: "1000"
+        response:
+          - status: 200
+            content: "success"
+            probability: 100
+
+    - path: "/network-failure"
+      method: "get"
+      behavior:
+        commands:
+          - networkFailure:
+              duration:
+                type: "constant"
+                mean: 10000
+        response:
+          - status: 503
+            content: "success"
+            probability: 100
+
+    - path: "/request"
+      method: "get"
+      behavior:
+        commands:
+          - request:
+              method: "get"
+              target: "https://www.google.com/complete/search?q=vai&cp=3&client=psy-ab&pq=vai"
+        response:
+          - status: 200
+            probability: 80
+          - status: 500
+            probability: 20

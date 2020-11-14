@@ -6,6 +6,4 @@ open class NonRunnableModelFactory : ImplFactory() {
 
     override fun getEndpointImpl(endpoint: Endpoint) = endpoint
 
-    override fun getCommandImpl(command: Command) = command
-
 }

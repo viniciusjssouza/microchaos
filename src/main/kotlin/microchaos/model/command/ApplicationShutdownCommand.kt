@@ -1,12 +1,9 @@
-package microchaos.model.ktor
+package microchaos.model.command
 
 import microchaos.infra.logging.loggerFor
-import microchaos.model.Command
 import kotlin.system.exitProcess
 
-internal class ApplicationShutdownCommand(
-    command: Command
-) : KtorCommand(command) {
+class ApplicationShutdownCommand : Command() {
 
     companion object {
         private val log = loggerFor<ApplicationShutdownCommand>()

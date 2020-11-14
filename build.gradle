@@ -35,7 +35,7 @@ repositories {
     mavenCentral()
 }
 
-ext.junitVersion = '5.6.0'
+ext.junitVersion = '5.7.0'
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"

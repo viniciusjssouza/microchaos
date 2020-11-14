@@ -38,9 +38,9 @@ class KtorService(
         }
     }
 
-    override fun start(wait: Boolean): ApplicationEngine {
+    override fun start(): ApplicationEngine {
         logger.info("Starting Ktor service on port ${this.port}")
-        return this.server.start(wait)
+        return this.server.start()
     }
 
     override fun stop() {
