@@ -1,0 +1,7 @@
+.gradle/
+.idea/
+build/
+consul/
+examples/
+gradlew*
+README.md

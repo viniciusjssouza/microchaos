@@ -1,5 +1,7 @@
 package microchaos.model.command
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import microchaos.infra.Environment
 import microchaos.infra.logging.loggerFor
 import microchaos.infra.network.NetworkInterface
@@ -17,21 +19,23 @@ class NetworkFailureCommand(
     }
 
     override fun run(): Any {
-        if (!this.environment.isLinuxOS()) {
+        if (!this@NetworkFailureCommand.environment.isLinuxOS()) {
             throw UnsupportedOperationException("Network Failure command is available only on Unix environments")
         }
-
-        val ioTime = this.generateDistributionSample()
-        var interfaceUp = true
-        try {
-            this.networkInterface.disable()
-            interfaceUp = false
-            log.info("Network interface disabled for ${ioTime.round(2)} ms")
-            Thread.sleep(ioTime.toLong())
-        } finally {
-            if (!interfaceUp) {
-                this.networkInterface.enable()
-                log.info("Network interface re-enabled")
+        // run the command in background
+        GlobalScope.launch {
+            val ioTime = this@NetworkFailureCommand.generateDistributionSample()
+            var interfaceUp = true
+            try {
+                this@NetworkFailureCommand.networkInterface.disable()
+                interfaceUp = false
+                log.info("Network interface disabled for ${ioTime.round(2)} ms")
+                Thread.sleep(ioTime.toLong())
+            } finally {
+                if (!interfaceUp) {
+                    this@NetworkFailureCommand.networkInterface.enable()
+                    log.info("Network interface re-enabled")
+                }
             }
         }
         return true

@@ -44,7 +44,7 @@ service:
       behavior:
         commands:
           - memoryAllocation:
-              amount: "1000"
+              amount: "10000"
         response:
           - status: 200
             content: "success"

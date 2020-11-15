@@ -15,7 +15,7 @@ data class NetworkInterface(val name: String) {
     }
 
     fun enable() {
-        Environment.runCLICommand("ifconfig $name down")
+        Environment.runCLICommand("ifconfig $name up")
         Environment.runCLICommand("route add default gw ${this.defaultGatewayAddress}")
     }
 

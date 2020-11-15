@@ -23,7 +23,7 @@ internal class NetworkFailureCommandTest {
             command.run()
         }.start()
 
-        Thread.sleep(100)
+        Thread.sleep(250)
         verify { networkInterface.disable() }
         Thread.sleep(250)
         verify(exactly = 0) { networkInterface.enable() }
