@@ -4,6 +4,7 @@ import com.orbitz.consul.Consul
 import com.orbitz.consul.cache.KVCache
 import com.orbitz.consul.model.kv.Value
 import microchaos.infra.Configuration
+import microchaos.infra.Hash
 import microchaos.infra.logging.loggerFor
 import java.io.ByteArrayInputStream
 import java.io.InputStream
@@ -11,6 +12,10 @@ import java.util.*
 
 
 class ConsulBehaviorConfigSource : BehaviorConfigSource {
+
+    // used to check is something really changed
+    private var lastValueHashing = ""
+    private var changed = false
 
     companion object {
         private val log = loggerFor<ConsulBehaviorConfigSource>()
@@ -42,8 +47,10 @@ class ConsulBehaviorConfigSource : BehaviorConfigSource {
                 .filter { value -> value.key == Configuration.serviceName }
                 .findFirst()
             val inputStream = this.readValue(newValue)
-            listener(inputStream)
-            log.info("Config for service '${Configuration.serviceName}' reloaded")
+            if (this.changed) {
+                listener(inputStream)
+                log.info("Config for service '${Configuration.serviceName}' reloaded")
+            }
         }
         cache.start()
         log.info("Watching for changes on key '${Configuration.serviceName}'")
@@ -54,9 +61,16 @@ class ConsulBehaviorConfigSource : BehaviorConfigSource {
             .orElseThrow {
                 ServiceConfigNotFoundException("Config for service '${Configuration.serviceName}' not found.")
             }?.let {
-                it.valueAsString.orElseThrow {
+                val newConfig = it.valueAsString.orElseThrow {
                     IllegalStateException("Config value not found for service '${Configuration.serviceName}'.")
                 }
+                val currHashing = Hash.md5(newConfig)
+                this.changed = false
+                if (currHashing != this.lastValueHashing) {
+                    this.lastValueHashing = currHashing
+                    this.changed = true
+                }
+                newConfig
             }?.let {
                 ByteArrayInputStream(it.toByteArray())
             } ?: throw IllegalStateException("Error while reading config for service ${Configuration.serviceName}")

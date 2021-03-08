@@ -22,8 +22,8 @@ class BehaviorConfig(private val configSources: Array<BehaviorConfigSource>, pri
 
     fun onModelChange(listener: ServiceModelChangeListener): BehaviorConfig {
         val configSource = this.getAvailableConfigSource()
-        configSource.onConfigChanged {newConfig: InputStream ->
-           val model = this.read(newConfig)
+        configSource.onConfigChanged { newConfig: InputStream ->
+            val model = this.read(newConfig)
             listener(model)
         }
         return this
