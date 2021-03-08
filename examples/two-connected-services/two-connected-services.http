@@ -1,0 +1,4 @@
+###
+GET {{baseUrl}}:8080/request
+Content-Type: application/json
+

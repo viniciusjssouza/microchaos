@@ -1,0 +1,38 @@
+service:
+  name: "svc-1"
+  type: "web"
+  port: "8080"
+
+  endpoints:
+    - path: "/request"
+      method: "get"
+      behavior:
+        commands:
+          - request:
+              method: "get"
+              target: "http://svc-2:8081/go"
+        response:
+          - status: 200
+            probability: 80
+          - status: 500
+            probability: 20
+---
+service:
+  name: "svc-2"
+  type: "web"
+  port: "8081"
+
+  endpoints:
+    - path: "/go"
+      method: "get"
+      behavior:
+        commands:
+          - cpuBound:
+              duration:
+                type: "logNormal"
+                mean: 9
+                stdDeviation: 0.25
+        response:
+          - status: 200
+            content: "success"
+            probability: 80

@@ -4,7 +4,6 @@ services:
   svc-1:
     image: microchaos
     environment:
-      # CONFIG_PATH: '/app/config/all-commands.yml'
       SERVICE_NAME: 'svc-1'
       CONSUL_URL: 'http://consul:8500'
     build:
@@ -12,8 +11,6 @@ services:
     ports:
       - 8080:8080
     privileged: true
-    volumes:
-      - ./examples:/app/config
     deploy:
       resources:
         limits:
