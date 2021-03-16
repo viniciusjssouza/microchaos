@@ -5,9 +5,7 @@ import io.ktor.application.call
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.response.respondText
-import io.ktor.routing.Routing
-import io.ktor.routing.get
-import io.ktor.routing.post
+import io.ktor.routing.*
 import microchaos.infra.logging.loggerFor
 import microchaos.model.Behavior
 import microchaos.model.Endpoint
@@ -48,17 +46,17 @@ abstract class KtorEndpoint(
         }
     }
 
-    fun build(routing: Routing): KtorEndpoint {
+    fun build(routing: Route): KtorEndpoint {
         setupEndpoint(routing, this::handleRequest)
         return this
     }
 
-    abstract fun setupEndpoint(routing: Routing,  action: RequestHandler)
+    abstract fun setupEndpoint(routing: Route,  action: RequestHandler)
 }
 
 class PostEndpoint(endpoint: Endpoint) : KtorEndpoint(endpoint) {
 
-    override fun setupEndpoint(routing: Routing, action: RequestHandler) {
+    override fun setupEndpoint(routing: Route, action: RequestHandler) {
         logger.info("Mapping POST endpoint for path '$path'")
         routing.post(this@PostEndpoint.path) {
             action(call)
@@ -68,7 +66,7 @@ class PostEndpoint(endpoint: Endpoint) : KtorEndpoint(endpoint) {
 
 class GetEndpoint(endpoint: Endpoint) : KtorEndpoint(endpoint) {
 
-    override fun setupEndpoint(routing: Routing, action: suspend (ApplicationCall) -> Unit) {
+    override fun setupEndpoint(routing: Route, action: suspend (ApplicationCall) -> Unit) {
         logger.info("Mapping GET endpoint for path '$path'")
         routing.get(this@GetEndpoint.path) {
             action(call)

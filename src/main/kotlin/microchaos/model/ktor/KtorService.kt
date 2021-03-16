@@ -1,10 +1,15 @@
 package microchaos.model.ktor
 
-import io.ktor.routing.routing
+import io.ktor.application.*
+import io.ktor.http.*
+import io.ktor.response.*
+import io.ktor.routing.*
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import microchaos.infra.Configuration
 import microchaos.infra.logging.loggerFor
+import microchaos.infra.slugify
 import microchaos.model.Endpoint
 import microchaos.model.PeriodicTask
 import microchaos.model.Service
@@ -30,16 +35,34 @@ class KtorService(
     init {
         this.server = embeddedServer(Netty, port = this.port) {
             this.routing {
-                endpoints.forEach { endpoint ->
-                    val ktorEndpoint = if (endpoint is KtorEndpoint) endpoint else KtorEndpoint.from(endpoint)
-                    ktorEndpoint.build(this)
+                setRoutesForEndpoints(this, endpoints)
+
+                // Expose the paths also under /<service name>
+                // We need to this because GKE ingress does not supports URL rewrite
+                this.route(Configuration.serviceName?.slugify() ?: "") {
+                    setRoutesForEndpoints(this, endpoints)
+                }
+                // health check page. TODO improve it
+                get("/healthz") {
+                    call.respondText("success", ContentType.Text.Html)
+                }
+                // GKE ingress requires a root index
+                get("/") {
+                    call.respondText("microchaos", ContentType.Text.Html)
                 }
             }
         }
     }
 
+    private fun setRoutesForEndpoints(route: Route, endpoints: List<Endpoint>) {
+        endpoints.forEach { endpoint ->
+            val ktorEndpoint = if (endpoint is KtorEndpoint) endpoint else KtorEndpoint.from(endpoint)
+            ktorEndpoint.build(route)
+        }
+    }
+
     override fun start(): ApplicationEngine {
-        logger.info("Starting Ktor service on port ${this.port}")
+        logger.info("Starting Ktor service on port ${this.port} with name '${Configuration.serviceName}'")
         return this.server.start()
     }
 

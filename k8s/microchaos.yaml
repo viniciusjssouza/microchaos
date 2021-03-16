@@ -1,0 +1,135 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: svc1
+  namespace: microchaos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: svc1
+  template:
+    metadata:
+      labels:
+        app: svc1
+    spec:
+      containers:
+        - name: svc1
+          image: viniciusjssouza/microchaos:latest
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          env:
+            - name: "SERVICE_NAME"
+              value: "svc1"
+            - name: "CONSUL_URL"
+              value: " http://hashicorp-consul-ui.default.svc.cluster.local"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc1
+  namespace: microchaos
+spec:
+  type: NodePort
+  selector:
+    app: svc1
+  ports:
+    - port: 8080
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: svc2
+  namespace: microchaos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: svc2
+  template:
+    metadata:
+      labels:
+        app: svc2
+    spec:
+      containers:
+        - name: svc2
+          image: viniciusjssouza/microchaos:latest
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          env:
+            - name: "SERVICE_NAME"
+              value: "svc2"
+            - name: "CONSUL_URL"
+              value: " http://hashicorp-consul-ui.default.svc.cluster.local"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc2
+  namespace: microchaos
+spec:
+  type: NodePort
+  selector:
+    app: svc2
+  ports:
+    - port: 8080
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: fanout-ingress
+  namespace: microchaos
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /svc1/*
+            backend:
+              serviceName: svc1
+              servicePort: 8080
+          - path: /svc2/*
+            backend:
+              serviceName: svc2
+              servicePort: 8080
+
+
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: http-hc-config
+  namespace: microchaos
+spec:
+  healthCheck:
+    checkIntervalSec: 15
+    port: 8080
+    type: HTTP
+    requestPath: /healthz
