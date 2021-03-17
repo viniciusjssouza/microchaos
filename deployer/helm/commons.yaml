@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: fanout-ingress
+  namespace: microchaos
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /svc1/*
+            backend:
+              serviceName: svc1
+              servicePort: 8080
+          - path: /svc2/*
+            backend:
+              serviceName: svc2
+              servicePort: 8080
+
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: http-hc-config
+  namespace: microchaos
+spec:
+  healthCheck:
+    checkIntervalSec: 15
+    port: 8080
+    type: HTTP
+    requestPath: /healthz
