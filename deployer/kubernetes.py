@@ -1,4 +1,5 @@
 import logging
+import re
 
 from shell import run_shell_command
 
@@ -15,4 +16,8 @@ class Kubernetes:
 
     def delete_all_resources(self):
         logger.info("Deleting all resources from namespace '%s'" % self.namespace)
-        # run_shell_command("kubectl delete all --all -n %s" % namespace)
+        run_shell_command("kubectl delete all --all -n %s" % self.namespace)
+
+    def format_address(self, address):
+        replacements = r'\1\2.%s.svc.cluster.local:\3\4' % self.namespace
+        return re.sub(r'(http\://|https\://)?(\w+)\:(\d+)(.+)', replacements, address)
