@@ -1,18 +1,13 @@
+import consul
 import yaml
 
 
-def _read_consul_address():
-    with open('./helm/service-chart/values.yaml', 'r') as file:
-        values = dict(yaml.full_load(file))
-        return values['consulLocation']
+class ConfigurationRepo:
 
+    def __init__(self, host, port):
+        self.consul = consul.Consul(host=host, port=port, scheme="http")
 
-def _store_service_config(desc, consul_location):
-    pass
-
-
-def store_configurations(service_descriptions):
-    consul_location = _read_consul_address()
-
-    for desc in service_descriptions.descriptions:
-        _store_service_config(desc, consul_location)
+    def store_configurations(self, service_descriptions):
+        for service in service_descriptions.descriptions:
+            yaml_content = yaml.dump(service)
+            self.consul.kv.put(service['service']['name'], yaml_content)

@@ -1,5 +1,5 @@
 service:
-  name: "svc1"
+  name: "service-a"
   type: "web"
   port: "8080"
 
@@ -10,7 +10,7 @@ service:
         commands:
           - request:
               method: "get"
-              target: "http://svc2:8081/go"
+              target: "http://service-b:8081/go"
         response:
           - status: 200
             probability: 80
@@ -18,7 +18,7 @@ service:
             probability: 20
 ---
 service:
-  name: "svc2"
+  name: "service-b"
   type: "web"
   port: "8081"
 
@@ -30,7 +30,7 @@ service:
           - cpuBound:
               duration:
                 type: "logNormal"
-                mean: 9
+                mean: 4
                 stdDeviation: 0.25
         response:
           - status: 200
