@@ -1,6 +1,8 @@
 import logging
 import re
 
+import yaml
+
 from shell import run_shell_command
 
 logger = logging.getLogger('Kubernetes')
@@ -23,13 +25,13 @@ class Kubernetes:
 
     def apply_resources(self, services):
         self._generate_manifests(services)
-        # self._apply_manifest(service_name)
+        self._apply_manifests()
 
     def _generate_manifests(self, services):
         logger.info("Generating manifest...")
         cmd = [
             "helm", "template", chart_path,
-            "--debug",
+            # "--debug",
             "--output-dir", output_dir,
         ]
         for idx, service in enumerate(services):
@@ -44,7 +46,13 @@ class Kubernetes:
         cmd = ["kubectl", "apply", "-f", manifest_path]
         run_shell_command(cmd)
 
-
     def format_address(self, address):
-        replacements = r'\1\2.%s.svc.cluster.local:\3\4' % self.namespace
+        external_port = Kubernetes._read_external_port()
+        replacements = r'\1\2.%s.svc.cluster.local:%d\4' % (self.namespace, external_port)
         return re.sub(r'(http\://|https\://)?(\w+)\:(\d+)(.+)', replacements, address)
+
+    @staticmethod
+    def _read_external_port():
+        with open('./deployer/helm/service-chart/values.yaml', 'r') as file:
+            values = dict(yaml.full_load(file))
+            return values['externalPort']

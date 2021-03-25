@@ -1,0 +1,3 @@
+#!/bin/bash
+./venv/activate
+python3 deployer.py --file=./examples/two-connected-services/two-connected-services.yml --consulHost=34.122.169.240 --consulPort=80

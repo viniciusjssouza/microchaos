@@ -1,6 +1,7 @@
 from itertools import chain
 
 import yaml
+from slugify import slugify
 
 
 class ServiceDescriptions:
@@ -25,7 +26,11 @@ class ServiceDescriptions:
         for f in files:
             docs = list(yaml.full_load_all(f))
             descriptions.append(docs)
-        return list(chain.from_iterable(descriptions))
+        services = list(chain.from_iterable(descriptions))
+        return ServiceDescriptions._slugify_names(services)
 
-# result = read_services_descriptions(['../examples/two-connected-services/two-connected-services.yml'])
-# print(result)
+    @staticmethod
+    def _slugify_names(services):
+        for svc in services:
+            svc['service']['name'] = slugify(svc['service']['name'])
+        return services
