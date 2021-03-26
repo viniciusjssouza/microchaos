@@ -22,7 +22,7 @@ def main():
 
     kubernetes = Kubernetes(args.namespace)
 
-    services = ServiceDescriptions(args.file).update_request_targets(kubernetes.format_address)
+    services = ServiceDescriptions(args.files).update_request_targets(kubernetes.format_address)
     logger.info('Services found: %s', services.services_names())
 
     config_repo = ConfigurationRepo(args.consulHost, args.consulPort)

@@ -12,7 +12,7 @@ class InputArgs:
 def read_input_args():
     parser = argparse.ArgumentParser(
         description='Deploys a service topology to a kubernetes cluster using microchaos definitions.')
-    parser.add_argument("--file", help="the microchaos yaml files to be processed",
+    parser.add_argument("--files", help="the microchaos yaml files to be processed",
                         type=argparse.FileType('r'), nargs='+')
     parser.add_argument("--consulHost", help="the host where consul is deployed", required=True)
     parser.add_argument("--consulPort", help="the host where consul is deployed", required=True)

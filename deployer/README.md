@@ -1,8 +1,18 @@
 ## Microchaos Deployer
 
-This projects facilitates the deployment of a microchaos topology to a kubernetes cluster.
-You just need to create the services configuration files and provide it to the deployer.
+This project facilitates the deployment of a microchaos topology to a kubernetes cluster.
+You just need to create the services' configuration files and provide it to the deployer.
 It will take the responsability for generating the kubernetes manifests and deploy it to the cluster.
+
+The deploy operation executes the following steps:
+
+  1) Read the microchaos manifests
+  2) Format target urls to match the internal cluster DNS addresses
+  3) Store the configurations of each service at Consul
+  4) Create the "microchaos" namespace in Kubernetes (if needed)
+  5) Delete all existing resources inside this namespace (if any)
+  6) Generate the services' manifests using `helm template`  
+  7) Apply the new services' manifests
 
 ### Requirements
 We suggest you use python virtual environment for running it:

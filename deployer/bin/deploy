@@ -1,3 +1,48 @@
 #!/bin/bash
-./venv/activate
-python3 deployer.py --file=./examples/two-connected-services/two-connected-services.yml --consulHost=34.122.169.240 --consulPort=80
+
+function check_dir() {
+  # check if we are on the microchaos root dir
+  result=$(ls -l | grep -e "deployer$")
+  if [ -z "$result" ]
+  then
+    echo "Error: You should execute the deploy inside the microchaos root directory"
+    exit 1
+  fi
+
+}
+
+function install_python_deps() {
+  cd ./deployer || return 1
+  ./venv/bin/activate
+  pip3 install -r requirements.txt > /dev/null
+  cd ../
+}
+
+function check_params() {
+  if [ -z "$CONSUL_HOST" ]
+  then
+    echo "Error: CONSUL_HOST env var not set"
+    exit 1
+  fi
+
+  if [ -z "$@" ]
+  then
+    echo "Error: no microchaos manifest files NOT provided"
+    exit 1
+  fi
+}
+
+check_dir
+check_params "$@"
+install_python_deps
+python3 ./deployer/deployer.py \
+  "--files=$*" \
+  --consulHost="$CONSUL_HOST" \
+  --consulPort=80 \
+  --namespace=microchaos \
+  --reset
+
+watch -n1 kubectl get pods -n microchaos
+echo "Ingress address:"
+kubectl describe ingress fanout-ingress -n microchaos | grep "Address"
+echo "All done!"
