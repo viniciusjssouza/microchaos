@@ -2,11 +2,13 @@ package microchaos.model.ktor
 
 import io.ktor.application.*
 import io.ktor.http.*
+import io.ktor.metrics.micrometer.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import io.ktor.server.engine.ApplicationEngine
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
+import io.micrometer.prometheus.PrometheusConfig
+import io.micrometer.prometheus.PrometheusMeterRegistry
 import microchaos.infra.Configuration
 import microchaos.infra.logging.loggerFor
 import microchaos.infra.slugify
@@ -27,13 +29,14 @@ class KtorService(
         private val logger = loggerFor<KtorService>()
     }
 
-    constructor(service: Service):
+    constructor(service: Service) :
             this(service.name, service.type, service.port, service.endpoints, service.periodicTasks)
 
     private val server: ApplicationEngine
 
     init {
         this.server = embeddedServer(Netty, port = this.port) {
+            this@KtorService.configureMetricsEndpoint(this)
             this.routing {
                 setRoutesForEndpoints(this, endpoints)
 
@@ -56,10 +59,25 @@ class KtorService(
 
     private fun setRoutesForEndpoints(route: Route, endpoints: List<Endpoint>) {
         endpoints.forEach { endpoint ->
-            val ktorEndpoint = if (endpoint is KtorEndpoint) endpoint else KtorEndpoint.from(endpoint)
+            val ktorEndpoint =
+                if (endpoint is KtorEndpoint) endpoint else KtorEndpoint.from(endpoint)
             ktorEndpoint.build(route)
         }
     }
+
+    private fun configureMetricsEndpoint(application: Application) {
+        val appMicrometerRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
+        application.install(MicrometerMetrics) {
+            registry = appMicrometerRegistry
+        }
+
+        application.routing {
+            get("/metrics") {
+                call.respond(appMicrometerRegistry.scrape())
+            }
+        }
+    }
+
 
     override fun start(): ApplicationEngine {
         logger.info("Starting Ktor service on port ${this.port} with name '${Configuration.serviceName}'")
