@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 function check_dir() {
   # check if we are on the microchaos root dir

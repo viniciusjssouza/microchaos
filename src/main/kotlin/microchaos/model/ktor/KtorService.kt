@@ -35,7 +35,9 @@ class KtorService(
     private val server: ApplicationEngine
 
     init {
-        this.server = embeddedServer(Netty, port = this.port) {
+        this.server = embeddedServer(Netty, port = this.port, configure = {
+            callGroupSize = 8 // number of threads to process application requests
+        }) {
             this@KtorService.configureMetricsEndpoint(this)
             this.routing {
                 setRoutesForEndpoints(this, endpoints)

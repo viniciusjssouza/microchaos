@@ -45,12 +45,10 @@ daemonset:
         processors:
         - drop_event.when.regexp:
             system.filesystem.mount_point: '^/(sys|cgroup|proc|dev|etc|host|lib)($|/)'
-      - module: prometheus
-        period: 10s
-        metricsets: ["collector"]
-        hosts: ["localhost:8080", "locahost:8081", "localhost:8082"]
-        metrics_path: /metrics
-        use_types: true
-        rate_counters: true
       output.elasticsearch:
         hosts: '${ELASTICSEARCH_HOSTS:elasticsearch-master:9200}'
+
+      metricbeat.autodiscover:
+        providers:
+          - type: kubernetes
+            hints.enabled: true

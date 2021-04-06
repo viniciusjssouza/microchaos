@@ -11,6 +11,11 @@ spec:
       app: {{ .name }}
   template:
     metadata:
+      annotations:
+        co.elastic.metrics/module: prometheus
+        co.elastic.metrics/metricsets: collector
+        co.elastic.metrics/hosts: '${data.host}:{{ .port }}'
+        co.elastic.metrics/period: 10s
       labels:
         app: {{ .name }}
     spec:
