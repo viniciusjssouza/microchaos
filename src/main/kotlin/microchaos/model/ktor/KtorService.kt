@@ -10,6 +10,7 @@ import io.ktor.server.netty.*
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import microchaos.infra.Configuration
+import microchaos.infra.HealthCheck
 import microchaos.infra.logging.loggerFor
 import microchaos.infra.slugify
 import microchaos.model.Endpoint
@@ -49,7 +50,11 @@ class KtorService(
                 }
                 // health check page. TODO improve it
                 get("/healthz") {
-                    call.respondText("success", ContentType.Text.Html)
+                    if (HealthCheck.isOk) {
+                        call.respondText("success", ContentType.Text.Html)
+                    } else {
+                        call.respondText("unavailable", status = HttpStatusCode.ServiceUnavailable)
+                    }
                 }
                 // GKE ingress requires a root index
                 get("/") {
