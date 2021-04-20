@@ -28,6 +28,6 @@ RUN gradle --no-daemon shadowJar
 FROM adoptopenjdk/openjdk11:alpine-jre
 
 COPY --from=builder /app/build/libs/microchaos-1.0.0-all.jar ./microchaos.jar
-CMD java -Xms64m -Xmx64m -jar microchaos.jar
+CMD java -Xms64m -Xmx256m -jar microchaos.jar
 
 EXPOSE 8080

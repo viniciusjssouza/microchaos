@@ -34,8 +34,12 @@ class LocalFileBehaviorConfigSource : BehaviorConfigSource {
         logger.info("Watching for changes on file '${this.getConfigFilePath()}'")
         val watchedFile = Path.of(this.getConfigFilePath())
         FileChangeMonitor{
-          logger.info("Reloading configuration from local file: ${it.toString()}")
-          listener(FileInputStream(it.toFile()))
+            try {
+                logger.info("Reloading configuration from local file: ${it.toString()}")
+                listener(FileInputStream(it.toFile()))
+            } catch (exc: IOException) {
+                logger.error("Error while reloading service configuration", exc)
+            }
         }.watch(watchedFile)
     }
 

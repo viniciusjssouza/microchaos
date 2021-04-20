@@ -1,49 +1,61 @@
+{{- range .Values.services }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.serviceName }}
-  namespace: {{ .Values.namespace }}
+  name: {{ .name }}
+  namespace: {{ $.Values.namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Values.serviceName }}
+      app: {{ .name }}
   template:
     metadata:
+      annotations:
+        co.elastic.metrics/module: prometheus
+        co.elastic.metrics/metricsets: collector
+        co.elastic.metrics/hosts: '${data.host}:{{ .port }}'
+        co.elastic.metrics/period: 10s
       labels:
-        app: {{ .Values.serviceName }}
+        app: {{ .name }}
     spec:
       containers:
-        - name: {{ .Values.serviceName }}
-          image: {{ .Values.image }}
+        - name: {{ .name }}
+          image: {{ $.Values.image }}
+          imagePullPolicy: Always
+          securityContext:
+            privileged: true
           ports:
-            - containerPort: {{ .Values.port }}
+            - containerPort: {{ .port }}
           readinessProbe:
             httpGet:
               path: /healthz
-              port: {{ .Values.port }}
+              port: {{ .port }}
             initialDelaySeconds: 5
             periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /healthz
-              port: {{ .Values.port }}
+              port: {{ .port }}
             initialDelaySeconds: 15
             periodSeconds: 20
           env:
             - name: "SERVICE_NAME"
-              value: "{{ .Values.serviceName }}"
+              value: "{{ .name }}"
             - name: "CONSUL_URL"
-              value: "{{ .Values.consulLocation }}"
+              value: "{{ $.Values.consulLocation }}"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.serviceName }}
-  namespace: {{ .Values.namespace }}
+  name: {{ .name }}
+  namespace: {{ $.Values.namespace }}
 spec:
   type: NodePort
   selector:
-    app: {{ .Values.serviceName }}
+    app: {{ .name }}
   ports:
-    - port: {{ .Values.port }}
+    - port: {{ $.Values.externalPort }}
+      targetPort: {{ .port }}
+---
+{{- end }}

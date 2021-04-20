@@ -1,0 +1,25 @@
+replicas: 1
+minimumMasterNodes: 1
+singleNode: true
+
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 200m
+  limits:
+    memory: 1Gi
+
+readinessProbe:
+  initialDelaySeconds: 60
+  periodSeconds: 20
+  failureThreshold: 5
+  timeoutSeconds: 230
+
+esJavaOpts: "-Xmx300m -Xms300m"
+
+clusterHealthCheckParams: "wait_for_status=yellow&timeout=30s"
+
+volumeClaimTemplate:
+  resources:
+    requests:
+      storage: 30Gi

@@ -1,0 +1,19 @@
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 200m
+  limits:
+    memory: 512Gi
+
+readinessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 30
+  failureThreshold: 5
+  timeoutSeconds: 30
+
+esJavaOpts: "-Xmx256m -Xms256m"
+
+kibanaConfig:
+  kibana.yml: |
+    xpack.encryptedSavedObjects.encryptionKey: ""
+

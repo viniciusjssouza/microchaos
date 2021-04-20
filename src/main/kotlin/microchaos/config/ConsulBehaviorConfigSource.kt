@@ -7,6 +7,7 @@ import microchaos.infra.Configuration
 import microchaos.infra.Hash
 import microchaos.infra.logging.loggerFor
 import java.io.ByteArrayInputStream
+import java.io.IOException
 import java.io.InputStream
 import java.util.*
 
@@ -41,15 +42,19 @@ class ConsulBehaviorConfigSource : BehaviorConfigSource {
         val kvClient = client.keyValueClient()
         val cache = KVCache.newCache(kvClient, Configuration.serviceName)
         cache.addListener { newValues ->
-            log.info("Reloading config for service '${Configuration.serviceName}'")
-            val newValue = newValues.values
-                .stream()
-                .filter { value -> value.key == Configuration.serviceName }
-                .findFirst()
-            val inputStream = this.readValue(newValue)
-            if (this.changed) {
-                listener(inputStream)
-                log.info("Config for service '${Configuration.serviceName}' reloaded")
+            try {
+                log.info("Reloading config for service '${Configuration.serviceName}'")
+                val newValue = newValues.values
+                    .stream()
+                    .filter { value -> value.key == Configuration.serviceName }
+                    .findFirst()
+                val inputStream = this.readValue(newValue)
+                if (this.changed) {
+                    listener(inputStream)
+                    log.info("Config for service '${Configuration.serviceName}' reloaded")
+                }
+            } catch (exc: IOException) {
+                log.error("Error while reloading service configuration", exc)
             }
         }
         cache.start()

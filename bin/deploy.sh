@@ -1,1 +1,0 @@
-kubectl delete all --all -n microchaos

@@ -1,24 +1,73 @@
 service:
-  name: "svc1"
-  type: "web"
-  port: "8080"
-
   endpoints:
-    - path: "/request"
+    - behavior:
+        commands:
+          - request:
+              method: get
+              target: http://service-b.microchaos.svc.cluster.local:8080/go
+        response:
+          - probability: 80
+            status: 200
+          - probability: 20
+            status: 500
+      method: get
+      path: /request
+
+    - path: "/io-bound"
+      method: "post"
+      behavior:
+        commands:
+          - ioBound:
+              duration:
+                type: "normal"
+                mean: 800
+                stdDeviation: 50
+        response:
+          - status: 200
+            content: "{ \"name\": \"microchaos\" }"
+            probability: 100
+
+    - path: "/memory-allocation"
       method: "get"
       behavior:
         commands:
-          - request:
-              method: "get"
-              target: "http://svc2:8081/go"
+          - memoryAllocation:
+              amount: "10"
         response:
           - status: 200
-            probability: 80
-          - status: 500
-            probability: 20
+            content: "success"
+            probability: 100
+
+    - path: "/network-failure"
+      method: "get"
+      behavior:
+        commands:
+          - networkFailure:
+              duration:
+                type: "constant"
+                mean: 10000
+        response:
+          - status: 503
+            content: "success"
+            probability: 100
+
+    - path: "/shutdown"
+      method: "post"
+      behavior:
+        commands:
+          - applicationShutdown
+        response:
+          - status: 200
+            content: "success"
+            probability: 100
+
+  name: service-a
+  port: '8080'
+  type: web
+
 ---
 service:
-  name: "svc2"
+  name: "service-b"
   type: "web"
   port: "8081"
 
@@ -30,7 +79,7 @@ service:
           - cpuBound:
               duration:
                 type: "logNormal"
-                mean: 9
+                mean: 4
                 stdDeviation: 0.25
         response:
           - status: 200
