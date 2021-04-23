@@ -1,0 +1,30 @@
+[
+  {
+    "alertId": "1c2a08e0-9eb8-11eb-97c3-db0e51afd465",
+    "alertName": "microchaos.network_failure",
+    "alertInstanceId": "service-a, service-a-57b868f5dd-nqwtl",
+    "alertedAt": "2021-04-23T11:26:59.998Z",
+    "group": "",
+    "groupName": "",
+    "subGroup": "",
+    "metricValue": "",
+    "threshold": "",
+    "reason": "",
+    "alertState": "",
+    "message": ""
+  },
+  {
+    "alertId": "1c2a08e0-9eb8-11eb-97c3-db0e51afd465",
+    "alertName": "microchaos.network_failure",
+    "alertInstanceId": "service-a, service-a-57b868f5dd-nqwtl",
+    "alertedAt": "2021-04-23T11:26:35.969Z",
+    "group": "service-a, service-a-57b868f5dd-nqwtl",
+    "groupName": "",
+    "subGroup": "",
+    "metricValue": "{\"condition0\":0,\"condition1\":0}",
+    "threshold": "{\"condition0\":[0],\"condition1\":[0]}",
+    "reason": "kubernetes.pod.network.rx.bytes is equal to a threshold of 0 (current value is 0) kubernetes.pod.network.tx.bytes is equal to a threshold of 0 (current value is 0)",
+    "alertState": "ALERT",
+    "message": ""
+  }
+]

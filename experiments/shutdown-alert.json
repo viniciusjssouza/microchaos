@@ -1,0 +1,30 @@
+[
+  {
+    "alertId": "648dbcf0-a433-11eb-bbe7-45bc4de4a110",
+    "alertName": "microchaos.application_shutdown",
+    "alertInstanceId": "service-a, service-a-57b868f5dd-nqwtl",
+    "alertedAt": "2021-04-23T12:58:19.101Z",
+    "group": "",
+    "groupName": "",
+    "subGroup": "",
+    "metricValue": "",
+    "threshold": "",
+    "reason": "",
+    "alertState": "",
+    "message": ""
+  },
+  {
+    "alertId": "648dbcf0-a433-11eb-bbe7-45bc4de4a110",
+    "alertName": "microchaos.application_shutdown",
+    "alertInstanceId": "service-a, service-a-57b868f5dd-nqwtl",
+    "alertedAt": "2021-04-23T12:58:13.209Z",
+    "group": "service-a, service-a-57b868f5dd-nqwtl",
+    "groupName": "",
+    "subGroup": "",
+    "metricValue": "{\"condition0\":0.1}",
+    "threshold": "{\"condition0\":[0]}",
+    "reason": "kubernetes.container.status.restarts is greater than a threshold of 0 (current value is 0.1)",
+    "alertState": "ALERT",
+    "message": ""
+  }
+]
