@@ -120,12 +120,6 @@ The project includes a utility for deploying microservices topologies based on m
 under the `deployer` folder. It is a Python project. For further details on how to use it, read the
 [docs here](./deployer/README.md).
 
-## Enhancements To do
-
-- Support configurable request timeouts (today is fixed on 3 seconds)
-- Support configurable amount of worker threads (today is fixed on 8 threads)
-- Support asynchronous request command
-- Support asynchronous I/O bound command
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
@@ -135,6 +129,10 @@ Please make sure to update tests as appropriate.
 ### Missing features
 
 - Model validation: the model resulting from parsing the YAML files are not validated.  
+- Support configurable request timeouts (today is fixed on 3 seconds)
+- Support configurable amount of worker threads (today is fixed on 8 threads)
+- Support asynchronous request command
+- Support asynchronous I/O bound command
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
