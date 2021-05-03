@@ -1,0 +1,209 @@
+service:
+  name: "frontend"
+  type: "web"
+  port: "8080"
+
+  endpoints:
+    - path: "/catalog"
+      method: "get"
+      behavior:
+        commands:
+          - request:
+              method: get
+              target: http://product-catalog:8081/products
+        response:
+          - status: 200
+            content: "success"
+    - path: "/recommendations"
+      method: "get"
+      behavior:
+        commands:
+          - request:
+              method: get
+              target: http://recommendation-service:8088/recommendations
+        response:
+          - status: 200
+            content: "success"
+    - path: "/checkout-payment"
+      method: "post"
+      behavior:
+        commands:
+          - request:
+              method: get
+              target: http://cart:8087/user/products
+          - request:
+              method: post
+              target: http://checkout:8082/payments
+        response:
+          - status: 200
+            content: "success"
+
+---
+service:
+  name: "cart"
+  type: "web"
+  port: "8087"
+
+  endpoints:
+    - path: "/user/products"
+      method: "get"
+      behavior:
+        commands:
+          - ioBound:
+              duration:
+                type: "normal"
+                mean: 50
+                stdDeviation: 10
+        response:
+          - status: 200
+            content: "success"
+---
+service:
+  name: "checkout"
+  type: "web"
+  port: "8082"
+
+  endpoints:
+    - path: "/payments"
+      method: "post"
+      behavior:
+        commands:
+          - request:
+              method: get
+              target: http://currency-service:8083/convert
+          - request:
+              method: post
+              target: http://payment-service:8084/payments
+          - request:
+              method: post
+              target: http://shipping-service:8085/shipments
+          - request:
+              method: post
+              target: http://email-service:8086/send-email
+        response:
+          - status: 200
+            content: "success"
+---
+service:
+  name: "shipping-service"
+  type: "web"
+  port: "8085"
+
+  endpoints:
+    - path: "/shipments"
+      method: "post"
+      behavior:
+        commands:
+          - ioBound:
+              duration:
+                type: "normal"
+                mean: 100
+                stdDeviation: 10
+        response:
+          - status: 200
+            content: "success"
+---
+service:
+  name: "payment-service"
+  type: "web"
+  port: "8084"
+
+  endpoints:
+    - path: "/payments"
+      method: "post"
+      behavior:
+        commands:
+          - ioBound:
+              duration:
+                type: "normal"
+                mean: 200
+                stdDeviation: 50
+        response:
+          - status: 200
+            content: "success"
+---
+service:
+  name: "currency-service"
+  type: "web"
+  port: "8083"
+
+  endpoints:
+    - path: "/convert"
+      method: "get"
+      behavior:
+        commands:
+          - ioBound:
+              duration:
+                type: "normal"
+                mean: 50
+                stdDeviation: 1
+          - cpuBound:
+              duration:
+                type: "normal"
+                mean: 50
+                stdDeviation: 5
+        response:
+          - status: 200
+            content: "success"
+---
+service:
+  name: "product-catalog"
+  type: "web"
+  port: "8081"
+
+  endpoints:
+    - path: "/products"
+      method: "get"
+      behavior:
+        commands:
+          - ioBound:
+              duration:
+                type: "normal"
+                mean: 100
+                stdDeviation: 20
+        response:
+          - status: 200
+            content: "success"
+---
+service:
+  name: "email-service"
+  type: "web"
+  port: "8086"
+
+  endpoints:
+    - path: "/send-email"
+      method: "post"
+      behavior:
+        commands:
+          - ioBound:
+              duration:
+                type: "normal"
+                mean: 100
+                stdDeviation: 10
+        response:
+          - status: 200
+            content: "success"
+---
+service:
+  name: "recommendation-service"
+  type: "web"
+  port: "8088"
+
+  endpoints:
+    - path: "/recommendations"
+      method: "get"
+      behavior:
+        commands:
+          - ioBound:
+              duration:
+                type: "normal"
+                mean: 50
+                stdDeviation: 1
+          - cpuBound:
+              duration:
+                type: "normal"
+                mean: 50
+                stdDeviation: 5
+        response:
+          - status: 200
+            content: "success"
