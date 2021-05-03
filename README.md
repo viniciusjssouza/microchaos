@@ -104,7 +104,15 @@ behavior:
 
 ## Supported failure modes
 
-TODO
+- Resources exhaustion
+    
+  - CPU
+  - Memory
+    
+- Network failure
+- Application shutdown
+- Request Timeouts
+- Unexpected responses
 
 ## Deployer
 
@@ -112,6 +120,12 @@ The project includes a utility for deploying microservices topologies based on m
 under the `deployer` folder. It is a Python project. For further details on how to use it, read the
 [docs here](./deployer/README.md).
 
+## Enhancements To do
+
+- Support configurable request timeouts (today is fixed on 3 seconds)
+- Support configurable amount of worker threads (today is fixed on 8 threads)
+- Support asynchronous request command
+- Support asynchronous I/O bound command
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

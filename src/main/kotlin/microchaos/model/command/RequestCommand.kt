@@ -5,6 +5,7 @@ import microchaos.model.HttpRequest
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpResponse
+import java.time.Duration
 
 class RequestCommand(
     private val httpRequest: HttpRequest
@@ -20,6 +21,7 @@ class RequestCommand(
         val request = this.httpRequest.let {
             java.net.http.HttpRequest
                 .newBuilder()
+                .timeout(Duration.ofSeconds(3))
                 .method(it.method.toUpperCase(), java.net.http.HttpRequest.BodyPublishers.noBody())
                 .uri((URI.create(it.target)))
                 .build()
