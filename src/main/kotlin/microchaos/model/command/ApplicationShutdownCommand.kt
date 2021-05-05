@@ -7,17 +7,19 @@ import microchaos.infra.HealthCheck
 import microchaos.infra.logging.loggerFor
 import kotlin.system.exitProcess
 
-class ApplicationShutdownCommand : Command() {
+class ApplicationShutdownCommand() : Command() {
 
     companion object {
         private val log = loggerFor<ApplicationShutdownCommand>()
     }
 
+    var waitTimeMillis: Long = 30_000
+
     override fun run(): Any {
         log.error("Finishing application with some error")
         HealthCheck.isOk = false
         GlobalScope.launch {
-            delay(30_000)
+            delay(this@ApplicationShutdownCommand.waitTimeMillis)
             exitProcess(1)
         }
         return true

@@ -11,16 +11,19 @@ class RequestCommand(
     private val httpRequest: HttpRequest
 ) : Command() {
 
+    private val client = HttpClient
+        .newBuilder()
+        .connectTimeout(Duration.ofSeconds(3))
+        .build()
+
     companion object {
         private val log = loggerFor<RequestCommand>()
+
     }
 
     override fun run(): String {
         log.info("Sending request to ${this.httpRequest.method} '${this.httpRequest.target}'")
-        val client = HttpClient
-            .newBuilder()
-            .connectTimeout(Duration.ofSeconds(3))
-            .build()
+
         val request = this.httpRequest.let {
             java.net.http.HttpRequest
                 .newBuilder()
