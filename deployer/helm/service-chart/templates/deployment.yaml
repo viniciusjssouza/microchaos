@@ -32,18 +32,24 @@ spec:
               path: /healthz
               port: {{ .port }}
             initialDelaySeconds: 5
+            failureThreshold: 5
             periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /healthz
               port: {{ .port }}
             initialDelaySeconds: 15
+            failureThreshold: 5
             periodSeconds: 20
           env:
             - name: "SERVICE_NAME"
               value: "{{ .name }}"
             - name: "CONSUL_URL"
               value: "{{ $.Values.consulLocation }}"
+          resources:
+            requests:
+              memory: "300Mi"
+              cpu: "64m"
 ---
 apiVersion: v1
 kind: Service
